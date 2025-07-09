@@ -69,10 +69,11 @@ liveReloadServer.server.once("connection", () => {
 });
 
 // Routers
-/*const coreRoute = require('./routes/coreRoute');
-const authRoute = require('./routes/authRoute');
-const dashboardRoute = require('./routes/dashboardRoute');
+const coreRoute = require('./routes/coreRoute');
 app.use(coreRoute);
+/*const authRoute = require('./routes/authRoute');
+const dashboardRoute = require('./routes/dashboardRoute');
+
 app.use(authRoute);
 app.use(dashboardRoute);*/
 
