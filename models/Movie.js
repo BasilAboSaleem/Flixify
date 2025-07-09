@@ -12,6 +12,7 @@ const movieSchema = new mongoose.Schema({
   trailerUrl: String,
   genres: [String],
   language: String,
+  category: { type: String, required: true },  
   isFeatured: { type: Boolean, default: false }, // للصفحة الرئيسية
 }, { timestamps: true });
 

@@ -16,10 +16,9 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
-async function seedMovies() {
+async function seedMoviesByCategory(category, endpoint) {
   try {
-    // مثال: جلب الأفلام الرائجة (Popular)
-    const response = await axios.get(`${TMDB_API_URL}/movie/popular`, {
+    const response = await axios.get(`${TMDB_API_URL}${endpoint}`, {
       params: {
         api_key: TMDB_API_KEY,
         language: 'en-US',
@@ -30,14 +29,12 @@ async function seedMovies() {
     const movies = response.data.results;
 
     for (const m of movies) {
-      // تحقق من وجود الفيلم قبل الإضافة
       const existing = await Movie.findOne({ tmdbId: m.id });
       if (existing) {
         console.log(`Movie "${m.title}" already exists, skipping.`);
         continue;
       }
 
-      // إنشاء كائن فيلم جديد
       const newMovie = new Movie({
         tmdbId: m.id,
         title: m.title,
@@ -46,19 +43,25 @@ async function seedMovies() {
         rating: m.vote_average,
         posterUrl: `https://image.tmdb.org/t/p/w500${m.poster_path}`,
         backdropUrl: `https://image.tmdb.org/t/p/w780${m.backdrop_path}`,
-        genres: [],  // هنضيفها لاحقًا لو حبينا
-        trailerUrl: '', // لاحقًا نجيبها من API التريلر
+        genres: [],
+        trailerUrl: '',
         language: m.original_language,
+        category: category,
       });
 
       await newMovie.save();
-      console.log(`Saved movie: ${m.title}`);
+      console.log(`Saved movie: ${m.title} [Category: ${category}]`);
     }
-
-    console.log('Seeding completed!');
-    process.exit(0);
   } catch (error) {
-    console.error('Error seeding movies:', error);
-    process.exit(1);
+    console.error(`Error seeding ${category} movies:`, error);
   }
+}
+
+async function seedMovies() {
+  await seedMoviesByCategory('popular', '/movie/popular');
+  await seedMoviesByCategory('coming_soon', '/movie/upcoming');
+  await seedMoviesByCategory('top_rated', '/movie/top_rated');
+  
+  console.log('Seeding all categories completed!');
+  process.exit(0);
 }

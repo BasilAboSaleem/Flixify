@@ -1,13 +1,8 @@
 const express = require('express');
 const router = express.Router();
+const coreCntroller = require('../controllers/coreController');
 
-router.get('/', (req, res) => {
-  res.render('pages/index', {
-    title: 'Flixify - Your Movie and TV Show Hub',
-    description: 'Discover the latest movies and TV shows with Flixify. Stream your favorites now!',
-    keywords: 'movies, tv shows, streaming, flixify',
-  });
-});
+router.get('/', coreController.index_get);
 
 router.get('/dashboard', (req, res) => {
   res.render('pages/dashboard', {
