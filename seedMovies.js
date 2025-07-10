@@ -61,7 +61,17 @@ async function seedMovies() {
   await seedMoviesByCategory('popular', '/movie/popular');
   await seedMoviesByCategory('coming_soon', '/movie/upcoming');
   await seedMoviesByCategory('top_rated', '/movie/top_rated');
-  
-  console.log('Seeding all categories completed!');
+
+  // Reset isFeatured to false for all movies
+  await Movie.updateMany({}, { isFeatured: false });
+
+  // Set first 10 movies as featured
+  const featured = await Movie.find().limit(10);
+  for (const movie of featured) {
+    movie.isFeatured = true;
+    await movie.save();
+  }
+
+  console.log('Seeding all categories completed and featured movies set!');
   process.exit(0);
 }

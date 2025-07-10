@@ -13,7 +13,7 @@ const movieSchema = new mongoose.Schema({
   genres: [String],
   language: String,
   category: { type: String, required: true },  
-  isFeatured: { type: Boolean, default: false }, // للصفحة الرئيسية
+  isFeatured: { type: Boolean, default: false }, 
 }, { timestamps: true });
 
 module.exports = mongoose.model('Movie', movieSchema);
