@@ -8,6 +8,8 @@ exports.index_get = async (req, res) => {
     const movies = await Movie.find({ category: 'popular' }).limit(12);
     const tvSeries = await Movie.find({ category: 'tv_series' }).limit(12);
     const animatedMovies = await Movie.find({ category: 'animated' }).limit(12);
+    const expectedPremiere = await Movie.find({ category: 'coming_soon' }).limit(6);
+
 
     res.render('pages/index', {
       title: 'Flixify',
@@ -17,7 +19,8 @@ exports.index_get = async (req, res) => {
       newReleases,
       movies,
       tvSeries,
-      animatedMovies
+      animatedMovies,
+      expectedPremiere
     });
 
   } catch (err) {

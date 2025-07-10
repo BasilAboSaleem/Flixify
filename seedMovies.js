@@ -6,6 +6,29 @@ const Movie = require('./models/Movie');
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_API_URL = 'https://api.themoviedb.org/3';
 
+// خريطة تحويل أرقام الـ genres إلى أسماء نصية
+const genreMap = {
+  28: 'Action',
+  12: 'Adventure',
+  16: 'Animation',
+  35: 'Comedy',
+  80: 'Crime',
+  99: 'Documentary',
+  18: 'Drama',
+  10751: 'Family',
+  14: 'Fantasy',
+  36: 'History',
+  27: 'Horror',
+  10402: 'Music',
+  9648: 'Mystery',
+  10749: 'Romance',
+  878: 'Science Fiction',
+  10770: 'TV Movie',
+  53: 'Thriller',
+  10752: 'War',
+  37: 'Western',
+};
+
 mongoose.connect(process.env.MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -16,7 +39,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
-// تعديل الدالة لتدعم extraParams
+// تعديل الدالة لتدعم extraParams ولتعبئة genres بشكل صحيح
 async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
   try {
     const response = await axios.get(`${TMDB_API_URL}${endpoint}`, {
@@ -37,15 +60,18 @@ async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
         continue;
       }
 
+      // تحويل genre_ids إلى أسماء نصوص
+      const genres = m.genre_ids ? m.genre_ids.map(id => genreMap[id]).filter(Boolean) : [];
+
       const newMovie = new Movie({
         tmdbId: m.id,
         title: m.title || 'Untitled',
-        overview: m.overview ? m.overview : 'No description available.',
+        overview: m.overview || 'No description available.',
         releaseDate: m.release_date,
         rating: m.vote_average,
         posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
         backdropUrl: m.backdrop_path ? `https://image.tmdb.org/t/p/w780${m.backdrop_path}` : '',
-        genres: [],  
+        genres: genres,  // 
         trailerUrl: '',
         language: m.original_language,
         category: category,
