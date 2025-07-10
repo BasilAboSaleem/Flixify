@@ -16,13 +16,15 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
-async function seedMoviesByCategory(category, endpoint) {
+// تعديل الدالة لتدعم extraParams
+async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
   try {
     const response = await axios.get(`${TMDB_API_URL}${endpoint}`, {
       params: {
         api_key: TMDB_API_KEY,
         language: 'en-US',
         page: 1,
+        ...extraParams // دمج الفلاتر الإضافية 
       }
     });
 
@@ -37,13 +39,13 @@ async function seedMoviesByCategory(category, endpoint) {
 
       const newMovie = new Movie({
         tmdbId: m.id,
-        title: m.title,
-        overview: m.overview,
+        title: m.title || 'Untitled',
+        overview: m.overview ? m.overview : 'No description available.',
         releaseDate: m.release_date,
         rating: m.vote_average,
-        posterUrl: `https://image.tmdb.org/t/p/w500${m.poster_path}`,
-        backdropUrl: `https://image.tmdb.org/t/p/w780${m.backdrop_path}`,
-        genres: [],
+        posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
+        backdropUrl: m.backdrop_path ? `https://image.tmdb.org/t/p/w780${m.backdrop_path}` : '',
+        genres: [],  
         trailerUrl: '',
         language: m.original_language,
         category: category,
@@ -61,6 +63,8 @@ async function seedMovies() {
   await seedMoviesByCategory('popular', '/movie/popular');
   await seedMoviesByCategory('coming_soon', '/movie/upcoming');
   await seedMoviesByCategory('top_rated', '/movie/top_rated');
+  await seedMoviesByCategory('tv_series', '/tv/popular');
+  await seedMoviesByCategory('animated', '/discover/movie', { with_genres: 16 });
 
   // Reset isFeatured to false for all movies
   await Movie.updateMany({}, { isFeatured: false });
