@@ -1,53 +1,37 @@
 <!DOCTYPE html>
-<!--[if IE 7]>
-<html class="ie ie7 no-js" lang="en-US">
-<![endif]-->
-<!--[if IE 8]>
-<html class="ie ie8 no-js" lang="en-US">
-<![endif]-->
-<!--[if !(IE 7) | !(IE 8)  ]><!-->
-<html lang="en" class="no-js">
-
-<!-- Head -->
+<html lang="en">
+<!-- head -->
 <%- include('../partials/front/head.ejs') %>
-<body>
-<!--preloading-->
-<%- include('../partials/front/preloader.ejs') %>
-<!--end of preloading-->
-<!--login form popup-->
-<%- include('../partials/front/auth/login.ejs') %>
-<!--end of login form popup-->
-<!--signup form popup-->
-<%- include('../partials/front/auth/signup.ejs') %>
-<!--end of signup form popup-->
+<!-- end head -->
 
-<!-- BEGIN | Header -->
-<%- include('../partials/front/header.ejs') %>
-<!-- END | Header -->
+<body class="body">
+	
+	<!-- header -->
+	<%- include('../partials/front/header.ejs') %>
+	<!-- end header -->
 
-<!--BEGIN | Slider Movie Items -->
-<%- include('../partials/front/sections/slider-movie-items.ejs') %>
-<!-- END | Slider Movie Items -->
+	<!-- home -->
+<%- include('../partials/front/sections/home.ejs') %>
+	<!-- end home -->
 
-<!--BEGIN |  Movie Items -->
-<%- include('../partials/front/sections/movie-items.ejs') %>
-<!-- END |  Movie Items -->
+	<!-- content -->
+<%- include('../partials/front/sections/content.ejs') %>
+	<!-- end content -->
 
-<!--BEGIN |  Trailers -->
-<%- include('../partials/front/sections/trailers.ejs') %>
-<!--END |  Trailers -->
+	<!-- expected premiere -->
+	<%- include('../partials/front/sections/expected-premiere.ejs') %>
+	<!-- end expected premiere -->
 
-<!-- latest new v1 section-->
-<%- include('../partials/front/sections/latestnew.ejs') %>
-<!--end of latest new v1 section-->
+	<!-- partners -->
+<%- include('../partials/front/sections/partners.ejs') %>
+	<!-- end partners -->
 
-<!-- footer section-->
-<%- include('../partials/front/footer.ejs') %>
-<!-- end of footer section-->
+	<!-- footer -->
+	<%- include('../partials/front/footer.ejs') %>
+	<!-- end footer -->
 
-<!-- script -->
-<%- include('../partials/front/script.ejs') %>
+	<!-- JS -->
+	<%- include('../partials/front/script.ejs') %>
 </body>
-
 
 </html>
