@@ -32,6 +32,22 @@
 	<meta name="author" content="Dmitry Volkov">
 	<title> Flixify </title>
 
+	 <style>
+      #emailError,
+      #passwordError {
+  display: block;
+  color: #ff5d79;
+  font-size: 0.85rem;
+  font-weight: 600;
+  margin-top: 5px;
+  margin-left: 4px;
+  max-width: 100%;
+  line-height: 1.3;
+  word-break: break-word;   /* مهم جدًا لتفادي دفع السطر */
+  white-space: normal;
+      }
+    </style>
+
 </head>
 <body class="body">
 
@@ -41,29 +57,26 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- registration form -->
-						<form action="#" class="sign__form">
+						<form action="/signup" id="registerForm" class="sign__form">
 							<a href="/" class="sign__logo">
 								<img src="img/logo.svg" alt="">
 							</a>
 
 							<div class="sign__group">
-								<input type="text" class="sign__input" placeholder="Name">
+								<input type="text" name="name"  class="sign__input" placeholder="Name" required>
 							</div>
 
 							<div class="sign__group">
-								<input type="text" class="sign__input" placeholder="Email">
+								<input type="text" name="email" id="emailId" class="sign__input" placeholder="Email" required>
+								<span id="emailError" ></span>
 							</div>
 
 							<div class="sign__group">
-								<input type="password" class="sign__input" placeholder="Password">
+								<input type="password" name="password" id="passwordId" class="sign__input" placeholder="Password" required>
+								<span id="passwordError" ></span>
 							</div>
 
-							<div class="sign__group sign__group--checkbox">
-								<input id="remember" name="remember" type="checkbox" checked="checked">
-								<label for="remember">I agree to the <a href="#">Privacy Policy</a></label>
-							</div>
-							
-							<button class="sign__btn" type="button">Sign up</button>
+							<button class="sign__btn" type="submit">Sign up</button>
 
 							<span class="sign__text">Already have an account? <a href="/signin">Sign in!</a></span>
 						</form>
@@ -87,6 +100,54 @@
 	<script src="js/photoswipe.min.js"></script>
 	<script src="js/photoswipe-ui-default.min.js"></script>
 	<script src="js/main.js"></script>
+	 <script>
+      const form = document.getElementById("registerForm");
+    
+      form.addEventListener("submit", async (e) => {
+        e.preventDefault();
+    
+        // إخفاء الأخطاء القديمة
+        document.getElementById("emailError").textContent = "";
+        document.getElementById("passwordError").textContent = "";
+    
+        const formData = {
+          email: document.getElementById("emailId").value,
+          password: document.getElementById("passwordId").value,
+        };
+    
+        const res = await fetch("/signup", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+    
+        const data = await res.json();
+    
+        // إذا كانت هناك أخطاء في الاستجابة
+        if (data.objErr) {
+          console.log(data.objErr);
+          data.objErr.forEach(item => {
+            if (item.path === "email") {
+              document.getElementById("emailError").textContent = "Please provide a valid email";
+            }
+            if (item.path === "password") {
+              document.getElementById("passwordError").textContent = "Use uppercase, number & symbol";
+            }
+          });
+        }
+    
+        // إذا كان البريد الإلكتروني موجود بالفعل
+        if (data.existEmail) {
+          document.getElementById("emailError").textContent = "Email already exists, try to login";
+        }
+    
+        // إذا كانت الاستجابة تحتوي على success و redirectTo
+        if (data.success && data.redirectTo) {
+          window.location.href = data.redirectTo; 
+        }
+      });
+    </script>
+    
 </body>
 
 </html>
