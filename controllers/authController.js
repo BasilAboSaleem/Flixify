@@ -87,6 +87,14 @@ exports.signup_post = async (req, res) => {
   }
 };
 
+exports.verify_get = (req, res) => {
+  res.render('pages/front/auth/verify', {
+    title: 'Verify Email - Flixify',
+    description: 'Verify your email to complete the signup process on Flixify.',
+    keywords: 'verify email, otp, movies, tv shows',
+  });
+}
+
 exports.forgotPassword_get = (req, res) => {
   res.render('pages/front/auth/forgot-password', {
     title: 'Forgot Password - Flixify',
