@@ -20,6 +20,7 @@ router.post('/signup',
 );
 router.get('/verify', authController.verify_get);
 router.post('/verify', authController.verify_post);
+router.get('/resend_verify', authController.resend_verify_post);
 router.get('/forgotPassword', authController.forgotPassword_get);
 
 module.exports = router;

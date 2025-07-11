@@ -42,24 +42,15 @@ app.use(session({
 app.use(flash());
 
 // Expose flash + setting globally
-/*app.use(require('./middlewares/authMiddlewares').checkIfUser);
 app.use((req, res, next) => {
   res.locals.success = req.flash('success');
   res.locals.error = req.flash('error');
   next();
 });
-const Setting = require('./models/setting');
-app.use(async (req, res, next) => {
-  try {
-    res.locals.setting = await Setting.findOne();
-    next();
-  } catch (err) {
-    console.error("Error loading settings:", err);
-    res.locals.setting = null;
-    next();
-  }
-});
-*/
+//app.use(require('./middlewares/authMiddlewares').checkIfUser);
+
+
+
 // Auto refresh
 const liveReloadServer = livereload.createServer();
 liveReloadServer.watch(path.join(__dirname, "public"));
