@@ -31,6 +31,19 @@
   <meta name="keywords" content="" />
   <meta name="author" content="Dmitry Volkov" />
   <title>Verify Email – Flixify</title>
+  <style>
+    #otpError {
+  color: #ff5d79;
+  font-weight: 600;
+  display: block;
+  margin-top: 0.2rem;
+  margin-left: 0.4rem;
+}
+
+    #resendMessage {
+      font-weight: 500;
+    }
+  </style>
 </head>
 
 <body class="body">
@@ -41,7 +54,7 @@
         <div class="col-12">
           <div class="sign__content">
             <!-- verification form -->
-            <form action="/verify" method="POST" class="sign__form">
+            <form action="/verify" id="verifyForm" method="POST" class="sign__form">
               <a href="/" class="sign__logo">
                 <img src="front/img/logo.svg" alt="Flixify Logo" />
               </a>
@@ -50,11 +63,13 @@
                 <input
                   type="text"
                   name="otp"
+                  id="otpId"
                   class="sign__input"
                   placeholder="Enter verification code"
                   maxlength="6"
                   required
                 />
+                <span id="otpError"></span>
               </div>
 
               <button class="sign__btn" type="submit">Verify</button>
@@ -83,6 +98,81 @@
   <script src="js/photoswipe.min.js"></script>
   <script src="js/photoswipe-ui-default.min.js"></script>
   <script src="js/main.js"></script>
+  <!-- Verify script -->
+  <script>
+    const form = document.getElementById("verifyForm");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const errorDiv = document.getElementById("otpError");
+      errorDiv.textContent = "";
+
+      const formData = {
+        otp: document.getElementById("otpId").value,
+      };
+
+      try {
+        const res = await fetch("/verify", {
+          method: "POST",
+          body: JSON.stringify(formData),
+          headers: { "Content-Type": "application/json" },
+        });
+
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          errorDiv.textContent = "Unexpected response from server.";
+          console.error("Response not JSON:", text);
+          return;
+        }
+
+        if (data.invalidOtp) {
+          errorDiv.textContent = "Invalid verification code. Please try again.";
+        } else if (data.blocked) {
+          errorDiv.textContent = data.message || "Too many attempts. Try again later.";
+        } else if (data.success && data.redirectTo) {
+          window.location.href = data.redirectTo;
+        } else {
+          errorDiv.textContent = "An unexpected error occurred. Please try again.";
+        }
+
+      } catch (error) {
+        errorDiv.textContent = "Network error. Please try again later.";
+        console.error(error);
+      }
+    });
+
+    // Resend code handler
+    document.getElementById("resendBtn").addEventListener("click", async () => {
+      const msgEl = document.getElementById("resendMessage");
+      msgEl.textContent = "";
+      msgEl.style.color = "#007bff";
+
+      try {
+        const res = await fetch("/verify/resend", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          msgEl.style.color = "green";
+          msgEl.textContent = "Verification code has been resent to your email.";
+        } else {
+          msgEl.style.color = "red";
+          msgEl.textContent = data.message || "Error resending code.";
+        }
+      } catch (err) {
+        msgEl.style.color = "red";
+        msgEl.textContent = "Network error. Please try again.";
+        console.error(err);
+      }
+    });
+  </script>
 </body>
 
 </html>
