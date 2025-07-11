@@ -70,11 +70,13 @@ liveReloadServer.server.once("connection", () => {
 
 // Routers
 const coreRoute = require('./routes/coreRoute');
+const authRoute = require('./routes/authRoute');
 app.use(coreRoute);
-/*const authRoute = require('./routes/authRoute');
+app.use(authRoute);
+/*
 const dashboardRoute = require('./routes/dashboardRoute');
 
-app.use(authRoute);
+
 app.use(dashboardRoute);*/
 
 // Connect DB + Start
