@@ -257,3 +257,9 @@ exports.resend_verify_post = async (req, res) => {
   }
 };
 
+exports.logout_get = (req, res) => {
+  res.clearCookie('connect.sid');
+  res.clearCookie('jwt');
+  res.redirect('/signin');
+};
+

@@ -60,17 +60,25 @@
 							<!-- end header nav -->
 
 							<!-- header auth -->
-							<div class="header__auth">
-								<button class="header__search-btn" type="button">
-									<i class="icon ion-ios-search"></i>
-								</button>
+<div class="header__auth">
+	<button class="header__search-btn" type="button">
+		<i class="icon ion-ios-search"></i>
+	</button>
 
-								<a href="/signin" class="header__sign-in">
-									<i class="icon ion-ios-log-in"></i>
-									<span>sign in</span>
-								</a>
-							</div>
-							<!-- end header auth -->
+	<% if (user) { %>
+		<a href="/logout" class="header__sign-in" title="Logout">
+			<i class="icon ion-ios-log-out"></i>
+			<span>sign out</span>
+		</a>
+	<% } else { %>
+		<a href="/signin" class="header__sign-in">
+			<i class="icon ion-ios-log-in"></i>
+			<span>sign in</span>
+		</a>
+	<% } %>
+</div>
+<!-- end header auth -->
+
 
 							<!-- header menu btn -->
 							<button class="header__btn" type="button">
