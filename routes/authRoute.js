@@ -2,12 +2,13 @@ const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
 const { check, validationResult } = require("express-validator");
+const authMiddlewares = require('../middlewares/authMiddlewares');
 
 
 
 
 router.get('/signin', authController.signin_get);
-router.post('/signin', authController.signin_post);
+router.post('/signin', authMiddlewares.loginLimiter, authController.signin_post);
 router.get('/signup', authController.signup_get);
 router.post('/signup', 
     [
@@ -21,6 +22,6 @@ router.post('/signup',
 );
 router.get('/verify', authController.verify_get);
 router.post('/verify', authController.verify_post);
-router.get('/resend_verify', authController.resend_verify_post);
+router.post('/resend_verify', authController.resend_verify_post);
 
 module.exports = router;
