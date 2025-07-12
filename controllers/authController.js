@@ -1,8 +1,10 @@
-const { validationResult } = require('express-validator');
+const {check ,validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require('../models/User');
+var jwt = require("jsonwebtoken");
+
 
 
 exports.signin_get = (req, res) => {
@@ -12,6 +14,36 @@ exports.signin_get = (req, res) => {
     keywords: 'signin, login, movies, tv shows, management',
   });
 }
+
+exports.signin_post = async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.body.email });
+    if (!user) {
+      return res.json({ error: "Email or password is incorrect" });
+    }
+
+    const isMatch = await bcrypt.compare(req.body.password, user.password);
+    if (!isMatch) {
+      return res.json({ error: "Email or password is incorrect" });
+    }
+
+    const token = jwt.sign({ id: user._id }, process.env.JWTSECRET_KEY);
+    res.cookie('jwt', token, { httpOnly: true, maxAge: 86400000 });
+
+    // فحص التحقق من البريد
+    if (!user.isVerified) {
+      req.session.userId = user._id;
+      return res.json({ success: true, redirectTo: "/verify" });
+    }
+
+    return res.json({ success: true, redirectTo: "/" });
+
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: "Server error" });
+  }
+};
+
 
 exports.signup_get = (req, res) => {
   res.render('pages/front/auth/signup', {
@@ -225,12 +257,3 @@ exports.resend_verify_post = async (req, res) => {
   }
 };
 
-
-
-exports.forgotPassword_get = (req, res) => {
-  res.render('pages/front/auth/forgot-password', {
-    title: 'Forgot Password - Flixify',
-    description: 'Reset your Flixify password if you have forgotten it.',
-    keywords: 'forgot password, reset password, movies, tv shows',
-  });
-}

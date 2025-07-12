@@ -31,6 +31,14 @@
 	<meta name="keywords" content="">
 	<meta name="author" content="Dmitry Volkov">
 	<title> Flixify </title>
+	  <style>
+
+    #error {
+      color: #ff5d79;
+      margin-left: 0.4rem;
+      font-weight: 600;
+    }
+  </style>
 
 </head>
 <body class="body">
@@ -41,17 +49,19 @@
 				<div class="col-12">
 					<div class="sign__content">
 						<!-- authorization form -->
-						<form action="#" class="sign__form">
+						<form action="/signin" class="sign__form" id="loginForm" method="POST">
 							<a href="/" class="sign__logo">
 								<img src="front/img/logo.svg" alt="">
 							</a>
 
 							<div class="sign__group">
-								<input type="text" name="email" class="sign__input" placeholder="Email">
+								<input type="text" name="email" id="emailId" class="sign__input" placeholder="Email" required>
+                                <span id="emailError" style="color: red;"></span>
 							</div>
 
 							<div class="sign__group">
-								<input type="password" name="password" class="sign__input" placeholder="Password">
+								<input type="password" name="password" id="passwordId" class="sign__input" placeholder="Password" required>
+								<span id="passwordError" style="color: red;"></span>
 							</div>
 
 							<div class="sign__group sign__group--checkbox">
@@ -59,7 +69,7 @@
 								<label for="remember">Remember Me</label>
 							</div>
 							
-							<button class="sign__btn" type="button">Sign in</button>
+							<button class="sign__btn" type="submit">Sign in</button>
 
 							<span class="sign__text">Don't have an account? <a href="/signup">Sign up!</a></span>
 
@@ -85,6 +95,49 @@
 	<script src="js/photoswipe.min.js"></script>
 	<script src="js/photoswipe-ui-default.min.js"></script>
 	<script src="js/main.js"></script>
+<script>
+  const form = document.getElementById("loginForm");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    // إخفاء رسائل الخطأ السابقة
+    document.getElementById("emailError").textContent = "";
+    document.getElementById("passwordError").textContent = "";
+
+    const formData = {
+      email: document.getElementById("emailId").value.trim(),
+      password: document.getElementById("passwordId").value.trim(),
+    };
+
+    try {
+      const res = await fetch("/signin", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+      console.log(data); // للمراجعة في الكونسول
+
+      if (data.error) {
+        // نفس الرسالة للاثنين، فنقسمها على الحقول
+        document.getElementById("emailError").textContent = data.error;
+        document.getElementById("passwordError").textContent = data.error;
+        return;
+      }
+
+      if (data.success && data.redirectTo) {
+        window.location.href = data.redirectTo;
+      }
+    } catch (err) {
+      console.error("Login error:", err);
+      alert("Something went wrong. Please try again later.");
+    }
+  });
+</script>
+
+
 </body>
 
 </html>

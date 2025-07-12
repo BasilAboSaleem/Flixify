@@ -7,6 +7,7 @@ const { check, validationResult } = require("express-validator");
 
 
 router.get('/signin', authController.signin_get);
+router.post('/signin', authController.signin_post);
 router.get('/signup', authController.signup_get);
 router.post('/signup', 
     [
@@ -21,6 +22,5 @@ router.post('/signup',
 router.get('/verify', authController.verify_get);
 router.post('/verify', authController.verify_post);
 router.get('/resend_verify', authController.resend_verify_post);
-router.get('/forgotPassword', authController.forgotPassword_get);
 
 module.exports = router;
