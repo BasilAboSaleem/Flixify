@@ -48,20 +48,37 @@ exports.movie_details_get = async (req, res) => {
     const apiKey = process.env.TMDB_API_KEY;
     const tmdbId = movie.tmdbId;
 
-    const [reviewsRes, imagesRes] = await Promise.all([
+    const [reviewsRes, imagesRes ,videosRes] = await Promise.all([
       axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/reviews`, {
         params: { api_key: apiKey, language: 'en-US', page: 1 }
       }),
       axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/images`, {
         params: { api_key: apiKey }
+      }),
+      axios.get(`https://api.themoviedb.org/3/movie/${tmdbId}/videos`, {
+        params: { api_key: apiKey, language: 'en-US' }
       })
     ]);
 
+    // استخراج المراجعات والصور من الردود
     const apiReviews = reviewsRes.data.results || [];
     const apiImages = imagesRes.data.backdrops || [];
+    // استخراج رابط التريلر من الفيديوهات
+    const videos = videosRes.data.results || [];
+    const trailerVideo = videos.find(v => v.type === 'Trailer' && v.site === 'YouTube');
+    const trailerUrl = trailerVideo ? `https://www.youtube.com/watch?v=${trailerVideo.key}` : null;
 
     // البحث باستخدام ObjectId الفيلم في الداتا بيز
     const localReviews = await Review.find({ movie: movie._id }).populate('user');
+
+    // جلب المواسم إذا كان العمل مسلسل
+    let tvSeasons = [];
+    if (movie.category === 'tv_series') {
+      const tvRes = await axios.get(`https://api.themoviedb.org/3/tv/${tmdbId}`, {
+        params: { api_key: apiKey, language: 'en-US' }
+      });
+      tvSeasons = tvRes.data.seasons || [];
+    }
 
     res.render('pages/front/details', {
       title: movie.title,
@@ -72,7 +89,6 @@ exports.movie_details_get = async (req, res) => {
       rating: movie.rating,
       posterUrl: movie.posterUrl,
       backdropUrl: movie.backdropUrl,
-      trailerUrl: movie.trailerUrl,
       genres: movie.genres.join(', '),
       language: movie.language,
       category: movie.category,
@@ -82,7 +98,9 @@ exports.movie_details_get = async (req, res) => {
       movie,
       apiReviews,
       localReviews,
-      apiImages
+      apiImages,
+      trailerUrl: trailerUrl,
+      tvSeasons
     });
 
   } catch (err) {

@@ -72,7 +72,7 @@ async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
         posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
         backdropUrl: m.backdrop_path ? `https://image.tmdb.org/t/p/w780${m.backdrop_path}` : '',
         genres: genres,  // 
-        trailerUrl: '',
+        trailerUrl:"",
         language: m.original_language,
         category: category,
         country: m.production_countries && m.production_countries.length > 0
