@@ -5,6 +5,7 @@ const { check, validationResult } = require("express-validator");
 const authMiddlewares = require('../middlewares/authMiddlewares');
 
 router.get('/', coreController.index_get);
+router.get('/movies/:id', coreController.movie_details_get);
 
 router.get('/dashboard', authMiddlewares.requireAuth, (req, res) => {
   res.render('pages/dashboard', {

@@ -75,6 +75,10 @@ async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
         trailerUrl: '',
         language: m.original_language,
         category: category,
+        country: m.production_countries && m.production_countries.length > 0
+  ? m.production_countries.map(c => c.name).join(', ')
+  : 'Unknown',
+        isFeatured: false, // سيتم تعيينها لاحقًا
       });
 
       await newMovie.save();

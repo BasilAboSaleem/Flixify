@@ -13,6 +13,7 @@ const movieSchema = new mongoose.Schema({
   genres: [String],
   language: String,
   category: { type: String, required: true },  
+  country: String,
   isFeatured: { type: Boolean, default: false }, 
 }, { timestamps: true });
 
