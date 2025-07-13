@@ -1,0 +1,40 @@
+<section class="content">
+    <!-- content__head  -->
+		<%- include('./content/head-tab.ejs') %>
+
+		<div class="container">
+			<div class="row">
+				<div class="col-12 col-lg-8 col-xl-8">
+					<!-- content tabs -->
+					<div class="tab-content" id="myTabContent">
+						<div class="tab-pane fade show active" id="tab-1" role="tabpanel" aria-labelledby="1-tab">
+							<div class="row">
+								<!-- comments -->
+								<%- include('./content/comments.ejs') %>
+								<!-- end comments -->
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="tab-2" role="tabpanel" aria-labelledby="2-tab">
+							<div class="row">
+								<!-- reviews -->
+								<%- include('./content/reviews.ejs') %>
+								<!-- end reviews -->
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="tab-3" role="tabpanel" aria-labelledby="3-tab">
+							<!-- project gallery -->
+							<%- include('./content/gallery.ejs') %>
+							<!-- end project gallery -->
+						</div>
+					</div>
+					<!-- end content tabs -->
+				</div>
+
+				<!-- sidebar -->
+				<%- include('./content/sidebar.ejs') %>
+				<!-- end sidebar -->
+			</div>
+		</div>
+	</section>
