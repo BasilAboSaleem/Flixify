@@ -4,13 +4,14 @@ const Review = require('../models/Review');
 
 exports.index_get = async (req, res) => {
   try {
-    const featuredMovies = await Movie.find({ isFeatured: true }).limit(10);
-    const newReleases = await Movie.find().sort({ createdAt: -1 }).limit(12);
+const allMovies = await Movie.find(); 
 
-    const movies = await Movie.find({ category: 'popular' }).limit(12);
-    const tvSeries = await Movie.find({ category: 'tv_series' }).limit(12);
-    const animatedMovies = await Movie.find({ category: 'animated' }).limit(12);
-    const expectedPremiere = await Movie.find({ category: 'coming_soon' }).limit(6);
+const featuredMovies = allMovies.filter(movie => movie.isFeatured);
+const newReleases = [...allMovies].sort((a, b) => b.createdAt - a.createdAt).slice(0, 12);
+const movies = allMovies.filter(movie => movie.category === 'popular').slice(0, 12);
+const tvSeries = allMovies.filter(movie => movie.category === 'tv_series').slice(0, 12);
+const animatedMovies = allMovies.filter(movie => movie.category === 'animated').slice(0, 12);
+const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_soon').slice(0, 6);
 
 
     res.render('pages/index', {
