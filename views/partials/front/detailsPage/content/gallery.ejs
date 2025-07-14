@@ -1,57 +1,16 @@
 <div class="gallery" itemscope>
-								<div class="row">
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-1.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-1.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 1</figcaption>
-									</figure>
-									<!-- end gallery item -->
-
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-2.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-2.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 2</figcaption>
-									</figure>
-									<!-- end gallery item -->
-
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-3.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-3.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 3</figcaption>
-									</figure>
-									<!-- end gallery item -->
-
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-4.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-4.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 4</figcaption>
-									</figure>
-									<!-- end gallery item -->
-
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-5.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-5.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 5</figcaption>
-									</figure>
-									<!-- end gallery item -->
-
-									<!-- gallery item -->
-									<figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
-										<a href="img/gallery/project-6.jpg" itemprop="contentUrl" data-size="1920x1280">
-											<img src="img/gallery/project-6.jpg" itemprop="thumbnail" alt="Image description" />
-										</a>
-										<figcaption itemprop="caption description">Some image caption 6</figcaption>
-									</figure>
-									<!-- end gallery item -->
-								</div>
-							</div>
+  <div class="row">
+    <% if (apiImages && apiImages.length > 0) { %>
+      <% apiImages.forEach((image, index) => { %>
+        <figure class="col-12 col-sm-6 col-xl-4" itemprop="associatedMedia" itemscope>
+          <a href="https://image.tmdb.org/t/p/original<%= image.file_path %>" itemprop="contentUrl" data-size="1920x1280">
+            <img src="https://image.tmdb.org/t/p/w780<%= image.file_path %>" itemprop="thumbnail" alt="Movie Image <%= index + 1 %>" />
+          </a>
+          <figcaption itemprop="caption description">Image <%= index + 1 %></figcaption>
+        </figure>
+      <% }) %>
+    <% } else { %>
+      <p>No photos available for this movie.</p>
+    <% } %>
+  </div>
+</div>
