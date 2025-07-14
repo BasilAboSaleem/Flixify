@@ -1,3 +1,22 @@
+<style>
+.dot-badge {
+  width: 8px;
+  height: 8px;
+  background-color: #ff55a5;
+  border-radius: 50%;
+  display: inline-block;
+  margin-left: 6px;
+  animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+
+</style>
 <header class="header">
 	<div class="header__wrap">
 		<div class="container">
@@ -13,13 +32,15 @@
 						<!-- nav -->
 						<ul class="header__nav">
 							<!-- Recently Added -->
-							<li class="header__nav-item">
-								<a href="/" class="header__nav-link">Recently Added</a>
-							</li>
+		<li class="header__nav-item">
+ <a href="/recently-added" class="header__nav-link">
+   <span class="dot-badge"> </span> Recently Added</span>
+</a>
+</li>
 
 							<!-- Movies -->
 							<li class="header__nav-item dropdown">
-								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Movies</a>
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Movies&#9662;</a>
 								<ul class="dropdown-menu header__dropdown-menu">
 									<li><a href="/movies">All Movies</a></li>
 									<li><a href="/movies/anime">Anime Movies</a></li>
@@ -32,7 +53,7 @@
 
 							<!-- TV Shows -->
 							<li class="header__nav-item dropdown">
-								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">TV Shows</a>
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Series&#9662;</a>
 								<ul class="dropdown-menu header__dropdown-menu">
 									<li><a href="/tv">All Series</a></li>
 									<li><a href="/tv/netflix">Netflix Series</a></li>
@@ -42,7 +63,7 @@
 
 							<!-- Asian Section -->
 							<li class="header__nav-item dropdown">
-								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Asian Section</a>
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Asian Section&#9662;</a>
 								<ul class="dropdown-menu header__dropdown-menu">
 									<li><a href="/asian/dramas">Asian Series</a></li>
 									<li><a href="/asian/top-rated">Top Rated</a></li>
@@ -52,7 +73,7 @@
 
 							<!-- Anime -->
 							<li class="header__nav-item dropdown">
-								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Anime</a>
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Anime&#9662;</a>
 								<ul class="dropdown-menu header__dropdown-menu">
 									<li><a href="/anime">All Anime</a></li>
 									<li><a href="/anime/episodes">Latest Episodes</a></li>
