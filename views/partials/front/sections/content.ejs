@@ -64,14 +64,14 @@
             <div class="col-12 col-sm-4">
               <div class="card__cover">
                 <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
-                <a href="/movie/<%= movie.tmdbId %>" class="card__play">
+                <a href="/movies/<%= movie.tmdbId %>" class="card__play">
                   <i class="icon ion-ios-play"></i>
                 </a>
               </div>
             </div>
             <div class="col-12 col-sm-8">
               <div class="card__content">
-                <h3 class="card__title"><a href="/movie/<%= movie.tmdbId %>"><%= movie.title %></a></h3>
+                <h3 class="card__title"><a href="/movies/<%= movie.tmdbId %>"><%= movie.title %></a></h3>
                 <span class="card__category">
                   <% movie.genres.forEach(genre => { %>
                     <a href="#"><%= genre %></a>
@@ -104,12 +104,12 @@
         <div class="card">
           <div class="card__cover">
             <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
-            <a href="/movie/<%= movie.tmdbId %>" class="card__play">
+            <a href="/movies/<%= movie.tmdbId %>" class="card__play">
               <i class="icon ion-ios-play"></i>
             </a>
           </div>
           <div class="card__content">
-            <h3 class="card__title"><a href="/movie/<%= movie.tmdbId %>"><%= movie.title %></a></h3>
+            <h3 class="card__title"><a href="/movies/<%= movie.tmdbId %>"><%= movie.title %></a></h3>
             <span class="card__category">
               <% movie.genres.forEach(genre => { %>
                 <a href="#"><%= genre %></a>
@@ -131,13 +131,13 @@
         <div class="card">
           <div class="card__cover">
             <img src="<%= series.posterUrl %>" alt="<%= series.title %>">
-            <a href="/movie/<%= series.tmdbId %>" class="card__play">
+            <a href="/movies/<%= series.tmdbId %>" class="card__play">
               <i class="icon ion-ios-play"></i>
             </a>
           </div> 
           <div class="card__content">
             <h3 class="card__title">
-              <a href="/movie/<%= series.tmdbId %>"><%= series.title %></a>
+              <a href="/movies/<%= series.tmdbId %>"><%= series.title %></a>
             </h3>
             <span class="card__category">
               <% series.genres.forEach(genre => { %>
@@ -162,13 +162,13 @@
         <div class="card">
           <div class="card__cover">
             <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
-            <a href="/movie/<%= movie.tmdbId %>" class="card__play">
+            <a href="/movies/<%= movie.tmdbId %>" class="card__play">
               <i class="icon ion-ios-play"></i>
             </a>
           </div>
           <div class="card__content">
             <h3 class="card__title">
-              <a href="/movie/<%= movie.tmdbId %>"><%= movie.title %></a>
+              <a href="/movies/<%= movie.tmdbId %>"><%= movie.title %></a>
             </h3>
             <span class="card__category">
               <% movie.genres.forEach(genre => { %>
