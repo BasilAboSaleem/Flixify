@@ -120,17 +120,34 @@
 						<!-- end availables -->
 
 						<!-- share -->
-						<div class="details__share">
-							<span class="details__share-title">Share with friends:</span>
+<div class="details__share">
+  <span class="details__share-title">Share with friends:</span>
 
-							<ul class="details__share-list">
-								<li class="facebook"><a href="#"><i class="icon ion-logo-facebook"></i></a></li>
-								<li class="instagram"><a href="#"><i class="icon ion-logo-instagram"></i></a></li>
-								<li class="twitter"><a href="#"><i class="icon ion-logo-twitter"></i></a></li>
-								<li class="vk"><a href="#"><i class="icon ion-logo-vk"></i></a></li>
-							</ul>
-						</div>
-						<!-- end share -->
+  <ul class="details__share-list">
+    <li class="facebook">
+      <a href="https://www.facebook.com/sharer/sharer.php?u=<%= encodeURIComponent(requestUrl) %>" target="_blank" rel="noopener noreferrer">
+        <i class="icon ion-logo-facebook"></i>
+      </a>
+    </li>
+    <li class="instagram">
+      <a href="https://www.instagram.com/?url=<%= encodeURIComponent(requestUrl) %>" target="_blank" rel="noopener noreferrer">
+        <i class="icon ion-logo-instagram"></i>
+      </a>
+    </li>
+    <li class="twitter">
+      <a href="https://twitter.com/intent/tweet?url=<%= encodeURIComponent(requestUrl) %>&text=<%= encodeURIComponent(movie.title) %>" target="_blank" rel="noopener noreferrer">
+        <i class="icon ion-logo-twitter"></i>
+      </a>
+    </li>
+    <li class="vk">
+      <a href="https://vk.com/share.php?url=<%= encodeURIComponent(requestUrl) %>" target="_blank" rel="noopener noreferrer">
+        <i class="icon ion-logo-vk"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+<!-- end share -->
+
 					</div>
 				</div>
 			</div>

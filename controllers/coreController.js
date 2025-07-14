@@ -81,6 +81,10 @@ exports.movie_details_get = async (req, res) => {
       tvSeasons = tvRes.data.seasons || [];
     }
 
+    // إنشاء رابط URL الحالي للمشاركة
+    const requestUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`;
+
+
         // جلب أفلام مشابهة 
     const relatedMovies = await Movie.find({
       category: movie.category,
@@ -108,7 +112,8 @@ exports.movie_details_get = async (req, res) => {
       apiImages,
       trailerUrl: trailerUrl,
       tvSeasons,
-      relatedMovies
+      relatedMovies,
+      requestUrl
     });
 
   } catch (err) {
