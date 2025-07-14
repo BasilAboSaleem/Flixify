@@ -81,6 +81,12 @@ exports.movie_details_get = async (req, res) => {
       tvSeasons = tvRes.data.seasons || [];
     }
 
+        // جلب أفلام مشابهة 
+    const relatedMovies = await Movie.find({
+      category: movie.category,
+      _id: { $ne: movie._id } // استثناء الفيلم الحالي
+    }).limit(6);
+
     res.render('pages/front/details', {
       title: movie.title,
       tmdbId: movie.tmdbId,
@@ -101,7 +107,8 @@ exports.movie_details_get = async (req, res) => {
       localReviews,
       apiImages,
       trailerUrl: trailerUrl,
-      tvSeasons
+      tvSeasons,
+      relatedMovies
     });
 
   } catch (err) {
