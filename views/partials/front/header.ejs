@@ -12,26 +12,53 @@
 
 						<!-- nav -->
 						<ul class="header__nav">
+							<!-- Recently Added -->
 							<li class="header__nav-item">
-								<a href="/" class="header__nav-link">Home</a>
+								<a href="/" class="header__nav-link">Recently Added</a>
 							</li>
 
-							<li class="header__nav-item">
-								<a href="/catalog" class="header__nav-link">Catalog</a>
+							<!-- Movies -->
+							<li class="header__nav-item dropdown">
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Movies</a>
+								<ul class="dropdown-menu header__dropdown-menu">
+									<li><a href="/movies">All Movies</a></li>
+									<li><a href="/movies/anime">Anime Movies</a></li>
+									<li><a href="/movies/asian">Asian Movies</a></li>
+									<li><a href="/movies/netflix">Netflix Movies</a></li>
+									<li><a href="/movies/collections">Movie Collections</a></li>
+									<li><a href="/movies/top-rated">Top Rated</a></li>
+								</ul>
 							</li>
 
-							<li class="header__nav-item">
-								<a href="/about" class="header__nav-link">About</a>
+							<!-- TV Shows -->
+							<li class="header__nav-item dropdown">
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">TV Shows</a>
+								<ul class="dropdown-menu header__dropdown-menu">
+									<li><a href="/tv">All Series</a></li>
+									<li><a href="/tv/netflix">Netflix Series</a></li>
+									<li><a href="/tv/top-rated">Top Rated</a></li>
+								</ul>
 							</li>
 
-							<% if (!user) { %>
-								<li class="header__nav-item">
-									<a href="/signin" class="header__nav-link">Sign In</a>
-								</li>
-								<li class="header__nav-item">
-									<a href="/signup" class="header__nav-link">Sign Up</a>
-								</li>
-							<% } %>
+							<!-- Asian Section -->
+							<li class="header__nav-item dropdown">
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Asian Section</a>
+								<ul class="dropdown-menu header__dropdown-menu">
+									<li><a href="/asian/dramas">Asian Series</a></li>
+									<li><a href="/asian/top-rated">Top Rated</a></li>
+									<li><a href="/asian/netflix">Netflix</a></li>
+								</ul>
+							</li>
+
+							<!-- Anime -->
+							<li class="header__nav-item dropdown">
+								<a class="dropdown-toggle header__nav-link" href="#" data-toggle="dropdown">Anime</a>
+								<ul class="dropdown-menu header__dropdown-menu">
+									<li><a href="/anime">All Anime</a></li>
+									<li><a href="/anime/episodes">Latest Episodes</a></li>
+									<li><a href="/anime/netflix">Netflix</a></li>
+								</ul>
+							</li>
 						</ul>
 						<!-- end nav -->
 

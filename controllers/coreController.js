@@ -122,6 +122,26 @@ exports.movie_details_get = async (req, res) => {
   }
 };
 
+exports.catalog_get = async (req, res) => {
+  try {
+    const allMovies = await Movie.find().sort({ createdAt: -1 }).limit(40); 
+    const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_soon').slice(0, 6);
+
+
+    res.render('pages/front/catalog', {
+      title: 'Catalog - Flixify',
+      description: 'Browse our extensive catalog of movies and TV shows.',
+      keywords: 'catalog, movies, tv shows, streaming',
+      movies: allMovies,
+      expectedPremiere
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+
 
 
 
