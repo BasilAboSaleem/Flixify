@@ -33,6 +33,62 @@ const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_so
     res.status(500).send('Server Error');
   }
 };
+exports.recently_added_get = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
+  const limit = 30;
+  const skip = (page - 1) * limit;
+
+  try {
+    const totalCount = await Movie.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const items = await Movie.find()
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.render('pages/front/catalog', {
+      title: 'Recently Added',
+      items,
+      currentPage: page,
+      totalPages,
+      section: 'recently_added'
+
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+}
+exports.all_movies_get = async (req, res) => {
+    const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
+  const limit = 30;
+  const skip = (page - 1) * limit;
+  try {
+    const totalCount = await Movie.countDocuments();
+    const totalPages = Math.ceil(totalCount / limit);
+
+const items = await Movie.find({ category: { $ne: 'tv_series' } })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.render('pages/front/catalog', {
+      title: 'All Movies',
+      items,
+      currentPage: page,
+      totalPages,
+      description: 'Browse all movies available on Flixify.',
+      keywords: 'all movies, catalog, streaming, movies',
+       section: 'all_movies'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
 
 exports.movie_details_get = async (req, res) => {
   try {

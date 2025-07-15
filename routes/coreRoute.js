@@ -6,7 +6,8 @@ const authMiddlewares = require('../middlewares/authMiddlewares');
 
 router.get('/', coreController.index_get);
 router.get('/movies/:id', coreController.movie_details_get);
-router.get("/catalog", coreController.catalog_get);
+router.get("/recently-added", coreController.recently_added_get);
+router.get('/all-movies', coreController.all_movies_get);
 
 router.get('/dashboard', authMiddlewares.requireAuth, (req, res) => {
   res.render('pages/dashboard', {
