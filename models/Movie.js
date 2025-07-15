@@ -1,20 +1,25 @@
 const mongoose = require('mongoose');
 
 const movieSchema = new mongoose.Schema({
-  tmdbId: { type: Number, required: true, unique: true }, // ID من TMDb
+  tmdbId: { type: Number, unique: true },
   title: String,
   overview: String,
-  releaseDate: String,
-  runtime: Number,
+  releaseDate: Date,
   rating: Number,
+  runtime: Number,
   posterUrl: String,
   backdropUrl: String,
-  trailerUrl: String,
   genres: [String],
+  trailerUrl: String,
   language: String,
-  category: { type: String, required: true },  
+  category: String, // popular, coming_soon, asian, netflix, anime ...
+  type: {
+    type: String,
+    enum: ['movie', 'tv'],
+    required: true,
+  },
   country: String,
-  isFeatured: { type: Boolean, default: false }, 
+  isFeatured: { type: Boolean, default: false },
 }, { timestamps: true });
 
 module.exports = mongoose.model('Movie', movieSchema);

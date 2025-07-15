@@ -66,7 +66,7 @@ exports.all_movies_get = async (req, res) => {
   const limit = 30;
   const skip = (page - 1) * limit;
   try {
-    const totalCount = await Movie.countDocuments();
+    const totalCount = await Movie.countDocuments({ category: { $ne: 'tv_series' } });
     const totalPages = Math.ceil(totalCount / limit);
 
 const items = await Movie.find({ category: { $ne: 'tv_series' } })
@@ -89,6 +89,35 @@ const items = await Movie.find({ category: { $ne: 'tv_series' } })
     res.status(500).send('Server error');
   }
 };
+exports.movies_anime_get = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
+  const limit = 30;
+  const skip = (page - 1) * limit;
+
+  try {
+    const totalCount = await Movie.countDocuments({ category: 'animated' });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const items = await Movie.find({ category: 'animated' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.render('pages/front/catalog', {
+      title: 'Anime Movies',
+      items,
+      currentPage: page,
+      totalPages,
+      description: 'Browse all anime movies available on Flixify.',
+      keywords: 'anime movies, catalog, streaming, anime',
+       section: 'anime_movies'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+}
 
 exports.movie_details_get = async (req, res) => {
   try {
