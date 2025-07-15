@@ -11,6 +11,7 @@ const newReleases = [...allMovies].sort((a, b) => b.createdAt - a.createdAt).sli
 const movies = allMovies.filter(movie => movie.category === 'popular').slice(0, 12);
 const tvSeries = allMovies.filter(movie => movie.category === 'tv_series').slice(0, 12);
 const animatedMovies = allMovies.filter(movie => movie.category === 'animated').slice(0, 12);
+const animeMovies = allMovies.filter(movie => movie.category === 'anime').slice(0, 12);
 const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_soon').slice(0, 6);
 
 
@@ -23,6 +24,7 @@ const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_so
       movies,
       tvSeries,
       animatedMovies,
+      animeMovies,
       expectedPremiere
     });
 

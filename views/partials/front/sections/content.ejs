@@ -23,6 +23,10 @@
 
 							<li class="nav-item">
 								<a class="nav-link" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">CARTOONS</a>
+
+
+              <li class="nav-item">
+                <a class="nav-link" data-toggle="tab" href="#tab-5" role="tab" aria-controls="tab-5" aria-selected="false">ANIME</a>
 							</li>
 						</ul>
 						<!-- end content tabs nav -->
@@ -43,6 +47,9 @@
 									<li class="nav-item"><a class="nav-link" id="3-tab" data-toggle="tab" href="#tab-3" role="tab" aria-controls="tab-3" aria-selected="false">TV SERIES</a></li>
 
 									<li class="nav-item"><a class="nav-link" id="4-tab" data-toggle="tab" href="#tab-4" role="tab" aria-controls="tab-4" aria-selected="false">CARTOONS</a></li>
+                  
+                  <li class="nav-item"><a class="nav-link" id="5-tab" data-toggle="tab" href="#tab-5" role="tab" aria-controls="tab-5" aria-selected="false">ANIME</a></li>
+
 								</ul>
 							</div>
 						</div>
@@ -201,6 +208,40 @@
       </div>
 </div>
 
+
+		<div class="tab-pane fade" id="tab-5" role="tabpanel" aria-labelledby="5-tab">
+  <div class="row">
+    <% animeMovies.forEach(movie => { %>
+      <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+        <div class="card">
+          <div class="card__cover">
+            <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
+            <a href="/movies/<%= movie.tmdbId %>" class="card__play">
+              <i class="icon ion-ios-play"></i>
+            </a>
+          </div>
+          <div class="card__content">
+            <h3 class="card__title">
+              <a href="/movies/<%= movie.tmdbId %>"><%= movie.title %></a>
+            </h3>
+            <span class="card__category">
+              <% movie.genres.forEach(genre => { %>
+                <a href="#"><%= genre %></a>
+              <% }) %>
+            </span>
+            <span class="card__rate">
+              <i class="icon ion-ios-star"></i><%= movie.rating %>
+            </span>
+          </div>
+        </div>
+      </div>
+    <% }) %>
+  </div>
+   <!-- Show More Button -->
+   <div class="col-12">
+        <a href="/recently-added" class="section__btn">Show more</a>
+      </div>
+</div>
 			</div>
 			<!-- end content tabs -->
 		</div>

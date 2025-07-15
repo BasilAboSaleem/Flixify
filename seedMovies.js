@@ -27,6 +27,19 @@ const genreMap = {
   53: 'Thriller',
   10752: 'War',
   37: 'Western',
+
+  // إضافات للمسلسلات
+  10759: 'Action & Adventure',
+  10762: 'Kids',
+  10763: 'News',
+  10764: 'Reality',
+  10765: 'Sci-Fi & Fantasy',
+  10766: 'Soap',
+  10767: 'Talk',
+
+  // أنواع أخرى محتملة
+  10768: 'War & Politics',
+  10769: 'Drama & Romance',
 };
 
 mongoose.connect(process.env.MONGODB_URL, {
@@ -39,7 +52,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
-// تعديل الدالة لتدعم extraParams ولتعبئة genres بشكل صحيح
+// دالة لجلب وحفظ الأفلام أو المسلسلات حسب التصنيف والنوع
 async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
   try {
     const response = await axios.get(`${TMDB_API_URL}${endpoint}`, {
@@ -47,45 +60,49 @@ async function seedMoviesByCategory(category, endpoint, extraParams = {}) {
         api_key: TMDB_API_KEY,
         language: 'en-US',
         page: 1,
-        ...extraParams // دمج الفلاتر الإضافية 
+        ...extraParams,
       }
     });
 
-    const movies = response.data.results;
+    const results = response.data.results;
 
-    for (const m of movies) {
+    for (const m of results) {
       const existing = await Movie.findOne({ tmdbId: m.id });
       if (existing) {
-        console.log(`Movie "${m.title}" already exists, skipping.`);
+        console.log(`Movie "${m.title || m.name}" already exists, skipping.`);
         continue;
       }
 
       // تحويل genre_ids إلى أسماء نصوص
       const genres = m.genre_ids ? m.genre_ids.map(id => genreMap[id]).filter(Boolean) : [];
 
+      // دعم عنوان الفيلم أو المسلسل وتاريخ الإصدار المناسب
+      const title = m.title || m.name || 'Untitled';
+      const releaseDate = m.release_date || m.first_air_date || null;
+
       const newMovie = new Movie({
         tmdbId: m.id,
-        title: m.title || 'Untitled',
+        title: title,
         overview: m.overview || 'No description available.',
-        releaseDate: m.release_date,
+        releaseDate: releaseDate,
         rating: m.vote_average,
         posterUrl: m.poster_path ? `https://image.tmdb.org/t/p/w500${m.poster_path}` : '',
         backdropUrl: m.backdrop_path ? `https://image.tmdb.org/t/p/w780${m.backdrop_path}` : '',
-        genres: genres,  // 
-        trailerUrl:"",
+        genres: genres,
+        trailerUrl: '',
         language: m.original_language,
         category: category,
         country: m.production_countries && m.production_countries.length > 0
-  ? m.production_countries.map(c => c.name).join(', ')
-  : 'Unknown',
-        isFeatured: false, // سيتم تعيينها لاحقًا
+          ? m.production_countries.map(c => c.name).join(', ')
+          : 'Unknown',
+        isFeatured: false,
       });
 
       await newMovie.save();
-      console.log(`Saved movie: ${m.title} [Category: ${category}]`);
+      console.log(`Saved ${category}: ${title}`);
     }
   } catch (error) {
-    console.error(`Error seeding ${category} movies:`, error);
+    console.error(`Error seeding ${category}:`, error);
   }
 }
 
@@ -96,10 +113,14 @@ async function seedMovies() {
   await seedMoviesByCategory('tv_series', '/tv/popular');
   await seedMoviesByCategory('animated', '/discover/movie', { with_genres: 16 });
 
-  // Reset isFeatured to false for all movies
+  // إضافة الأنمي فقط (Animation + اللغة اليابانية)
+  await seedMoviesByCategory('anime', '/discover/movie', { with_genres: 16, with_original_language: 'ja' });
+  await seedMoviesByCategory('anime', '/discover/tv', { with_genres: 16, with_original_language: 'ja' });
+
+  // إعادة تعيين isFeatured لكل الأفلام
   await Movie.updateMany({}, { isFeatured: false });
 
-  // Set first 10 movies as featured
+  // تعيين أول 10 أفلام كـ featured
   const featured = await Movie.find().limit(10);
   for (const movie of featured) {
     movie.isFeatured = true;
