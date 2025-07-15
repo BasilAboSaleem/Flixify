@@ -4,16 +4,29 @@ const Review = require('../models/Review');
 
 exports.index_get = async (req, res) => {
   try {
-const allMovies = await Movie.find(); 
+    // جلب الأفلام المميزة
+    const featuredMovies = await Movie.find({ isFeatured: true }).limit(10).exec();
 
-const featuredMovies = allMovies.filter(movie => movie.isFeatured);
-const newReleases = [...allMovies].sort((a, b) => b.createdAt - a.createdAt).slice(0, 12);
-const movies = allMovies.filter(movie => movie.category === 'popular').slice(0, 12);
-const tvSeries = allMovies.filter(movie => movie.category === 'tv_series').slice(0, 12);
-const animatedMovies = allMovies.filter(movie => movie.category === 'animated').slice(0, 12);
-const animeMovies = allMovies.filter(movie => movie.category === 'anime').slice(0, 12);
-const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_soon').slice(0, 6);
+    // أحدث الأفلام (مرتبة حسب تاريخ الإنشاء)
+    const newReleases = await Movie.find()
+      .sort({ createdAt: -1 })
+      .limit(12)
+      .exec();
 
+    // أفلام شعبية (popular)
+    const movies = await Movie.find({ category: 'popular' }).limit(12).exec();
+
+    // مسلسلات تلفزيونية
+    const tvSeries = await Movie.find({ category: 'tv_series' }).limit(12).exec();
+
+    // أفلام كرتون
+    const animatedMovies = await Movie.find({ category: 'animated' }).limit(12).exec();
+
+    // أنمي
+    const animeMovies = await Movie.find({ category: 'anime' }).limit(12).exec();
+
+    // أفلام أو مسلسلات قادمة (coming_soon)
+    const expectedPremiere = await Movie.find({ category: 'coming_soon' }).limit(6).exec();
 
     res.render('pages/index', {
       title: 'Flixify',
@@ -25,7 +38,7 @@ const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_so
       tvSeries,
       animatedMovies,
       animeMovies,
-      expectedPremiere
+      expectedPremiere,
     });
 
   } catch (err) {
@@ -33,6 +46,7 @@ const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_so
     res.status(500).send('Server Error');
   }
 };
+
 exports.recently_added_get = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
   const limit = 30;
