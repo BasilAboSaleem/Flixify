@@ -39,7 +39,7 @@
                 <%= date %>
               </span>
             </div>
-            <p class="comments__text"><%= comment.text || comment.content %></p>
+<p class="comments__text"><%= comment.comment || comment.content || comment.text %></p>
             <div class="comments__actions">
               <div class="comments__rate">
                 <button type="button"><i class="icon ion-md-thumbs-up"></i><%= comment.likes || comment.author_details?.rating || 0 %></button>
@@ -53,9 +53,10 @@
       <% } %>
     </ul>
 
-    <form action="#" class="form">
-      <textarea id="text" name="text" class="form__textarea" placeholder="Add comment"></textarea>
-      <button type="button" class="form__btn">Send</button>
-    </form>
+ <form action="/add-comment" method="POST" class="form">
+  <input type="hidden" name="movieId" value="<%= movie._id %>" />
+  <textarea name="comment" class="form__textarea" placeholder="Add comment" required></textarea>
+  <button type="submit" class="form__btn">Send</button>
+</form>
   </div>
 </div>

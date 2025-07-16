@@ -9,7 +9,7 @@ const requireAuth = (req,res,next) => {
     if(token){
         jwt.verify(token, process.env.JWTSECRET_KEY, (err) => {
             if(err){
-                res.rediret("/login")
+                res.redirect("/signin")
             }else{
                 next()
             }
@@ -17,7 +17,7 @@ const requireAuth = (req,res,next) => {
         })
 
 }else{
-    res.redirect("/login")
+    res.redirect("/signin")
 }
 
 }
