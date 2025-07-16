@@ -161,6 +161,62 @@ exports.movies_asian_get = async (req, res) => {
     res.status(500).send('Server error');
   }
 };
+exports.movies_netflix_get = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1    
+  const limit = 30;
+  const skip = (page - 1) * limit;
+  try {
+    const totalCount = await Movie.countDocuments({ category: /netflix/i, type: 'movie' });
+    const totalPages = Math.ceil(totalCount / limit);
+    const items = await Movie.find({ category: /netflix/i, type: 'movie' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    res.render('pages/front/catalog', {
+      title: 'Netflix Movies',
+      items,
+      currentPage: page,
+      totalPages,
+      description: 'Browse all Netflix movies available on Flixify.',
+      keywords: 'netflix movies, catalog, streaming, netflix',
+      section: 'netflix_movies'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+exports.movies_top_rated_get = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; 
+  const limit = 30;
+  const skip = (page - 1) * limit;
+
+  try {
+    const totalCount = await Movie.countDocuments({ category: 'top_rated', type: 'movie' });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const items = await Movie.find({ category: 'top_rated', type: 'movie' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.render('pages/front/catalog', {
+      title: 'Top Rated Movies',
+      items,
+      currentPage: page,
+      totalPages,
+      description: 'Browse all top-rated movies available on Flixify.',
+      keywords: 'top rated movies, catalog, streaming, top rated',
+      section: 'top_rated_movies'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
+
 exports.movie_details_get = async (req, res) => {
   try {
     const movieId = req.params.id;
