@@ -23,6 +23,13 @@ router.get('/asian/series', coreController.asian_series_get);
 router.get('/asian/top-rated', coreController.asian_top_rated_get);
 router.get('/asian/netflix', coreController.asian_netflix_get);
 
+//anime
+router.get('/anime', coreController.anime_get);
+router.get('/anime/series', coreController.anime_series_get);
+router.get('/anime/movies', coreController.anime_movies_get);
+router.get('/anime/top-rated', coreController.anime_top_rated_get);
+router.get('/anime/netflix', coreController.anime_netflix_get);
+
 router.get('/dashboard', authMiddlewares.requireAuth, (req, res) => {
   res.render('pages/dashboard', {
     title: 'Dashboard - Flixify',
