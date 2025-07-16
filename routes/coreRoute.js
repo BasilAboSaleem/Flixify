@@ -12,6 +12,10 @@ router.get('/movies-cartoon', coreController.movies_cartoon_get);
 router.get('/movies-asian', coreController.movies_asian_get);
 router.get('/movies-netflix', coreController.movies_netflix_get);
 router.get('/movies-top-rated', coreController.movies_top_rated_get);
+//tv
+router.get('/tv', coreController.tv_get);
+router.get('/tv/netflix', coreController.tv_netflix_get);
+router.get('/tv/top-rated', coreController.tv_top_rated_get);
 
 router.get('/dashboard', authMiddlewares.requireAuth, (req, res) => {
   res.render('pages/dashboard', {
