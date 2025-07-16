@@ -18,21 +18,31 @@
                 <%= review.rating || review.author_details?.rating || 'N/A' %>
               </span>
             </div>
-            <p class="reviews__text"><%= review.content || review.text || '' %></p>
+            <p class="reviews__text"><%= review.content || review.text || review.comment || '' %></p>
           </li>
         <% }) %>
       <% } %>
     </ul>
 
     <!-- نموذج إضافة مراجعة -->
-    <form action="#" class="form">
-      <input type="text" name="title" class="form__input" placeholder="Title" />
-      <textarea name="review" class="form__textarea" placeholder="Review"></textarea>
-      <div class="form__slider">
-        <div class="form__slider-rating" id="slider__rating"></div>
-        <div class="form__slider-value" id="form__slider-value"></div>
-      </div>
-      <button type="button" class="form__btn">Send</button>
-    </form>
+   <form action="/add-review" method="POST" class="form" id="reviewForm">
+  <input type="hidden" name="movieId" value="<%= movie._id %>" />
+  <input type="text" name="title" class="form__input" placeholder="Title" required />
+  <textarea name="review" class="form__textarea" placeholder="Review" required></textarea>
+  <div class="form__slider">
+    <input type="range" min="0" max="10" step="0.1" name="rating" id="slider__rating" />
+    <div class="form__slider-value" id="form__slider-value">5</div>
+  </div>
+  <button type="submit" class="form__btn">Send</button>
+</form>
+
+<script>
+  const slider = document.getElementById('slider__rating');
+  const sliderValue = document.getElementById('form__slider-value');
+  slider.addEventListener('input', () => {
+    sliderValue.textContent = slider.value;
+  });
+</script>
+
   </div>
 </div>

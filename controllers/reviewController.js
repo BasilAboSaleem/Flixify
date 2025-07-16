@@ -42,3 +42,38 @@ exports.add_comment_post = async (req, res) => {
     res.status(500).send('Internal server error');
   }
 };
+
+exports.add_review_post = async (req, res) => {
+  try {
+    const userId = req.user._id; // تأكد من وجود المستخدم (الميدل وير تأكدت)
+    const { movieId, title, review, rating } = req.body;
+
+    if (!movieId || !review || !rating) {
+      return res.status(400).send('Missing required fields');
+    }
+
+    // إيجاد الفيلم بالـ ObjectId
+    const movie = await Movie.findById(movieId);
+    if (!movie) {
+      return res.status(404).send('Movie not found');
+    }
+
+    // إنشاء الريفيو الجديد وتخزينه
+    const newReview = new Review({
+      user: userId,
+      movie: movie._id,
+      comment: review,
+      rating: Number(rating),
+      title: title || ''  // لو ضفت حقل title في المودل
+    });
+
+    await newReview.save();
+
+    // بعد الحفظ، إعادة التوجيه لصفحة التفاصيل (تقدر ترسل JSON لو عملت AJAX)
+    res.redirect(`/movies/${movie.tmdbId}`);
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
