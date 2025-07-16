@@ -80,10 +80,10 @@ exports.all_movies_get = async (req, res) => {
   const limit = 30;
   const skip = (page - 1) * limit;
   try {
-    const totalCount = await Movie.countDocuments({ category: { $ne: 'tv_series' } });
+    const totalCount = await Movie.countDocuments({ type: 'movie' });
     const totalPages = Math.ceil(totalCount / limit);
 
-const items = await Movie.find({ category: { $ne: 'tv_series' } })
+    const items = await Movie.find({ type: 'movie' })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
@@ -103,36 +103,64 @@ const items = await Movie.find({ category: { $ne: 'tv_series' } })
     res.status(500).send('Server error');
   }
 };
-exports.movies_anime_get = async (req, res) => {
+exports.movies_cartoon_get = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
   const limit = 30;
   const skip = (page - 1) * limit;
 
   try {
-    const totalCount = await Movie.countDocuments({ category: 'animated' });
+    const totalCount = await Movie.countDocuments({ category: 'animated' , type: 'movie'});
     const totalPages = Math.ceil(totalCount / limit);
 
-    const items = await Movie.find({ category: 'animated' })
+    const items = await Movie.find({ category: 'animated' , type: 'movie'})
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .exec();
 
     res.render('pages/front/catalog', {
-      title: 'Anime Movies',
+      title: 'cartoon Movies',
       items,
       currentPage: page,
       totalPages,
-      description: 'Browse all anime movies available on Flixify.',
-      keywords: 'anime movies, catalog, streaming, anime',
-       section: 'anime_movies'
+      description: 'Browse all cartoon movies available on Flixify.',
+      keywords: 'cartoon movies, catalog, streaming, cartoon',
+       section: 'cartoon_movies'
     });
   } catch (err) {
     console.error(err);
     res.status(500).send('Server error');
   }
 }
+exports.movies_asian_get = async (req, res) => {
+  const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
+  const limit = 30;
+  const skip = (page - 1) * limit;
 
+  try {
+    const totalCount = await Movie.countDocuments({ category: 'asian' , type: 'movie' });
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const items = await Movie.find({ category: 'asian' , type: 'movie' })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    res.render('pages/front/catalog', {
+      title: 'Asian Movies',
+      items,
+      currentPage: page,
+      totalPages,
+      description: 'Browse all Asian movies available on Flixify.',
+      keywords: 'asian movies, catalog, streaming, asian',
+      section: 'asian_movies'
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+};
 exports.movie_details_get = async (req, res) => {
   try {
     const movieId = req.params.id;
@@ -223,25 +251,7 @@ exports.movie_details_get = async (req, res) => {
   }
 };
 
-exports.catalog_get = async (req, res) => {
-  try {
-    const allMovies = await Movie.find().sort({ createdAt: -1 }).limit(40); 
-    const expectedPremiere = allMovies.filter(movie => movie.category === 'coming_soon').slice(0, 6);
 
-
-    res.render('pages/front/catalog', {
-      title: 'Catalog - Flixify',
-      description: 'Browse our extensive catalog of movies and TV shows.',
-      keywords: 'catalog, movies, tv shows, streaming',
-      movies: allMovies,
-      expectedPremiere
-    });
-
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server Error');
-  }
-};
 
 
 
