@@ -1,6 +1,7 @@
 const axios = require('axios');
 const Movie = require('../models/Movie');
 const Review = require('../models/Review');
+const User = require('../models/User');
 const e = require('express');
 
 exports.index_get = async (req, res) => {
@@ -629,3 +630,39 @@ exports.movie_details_get = async (req, res) => {
     return res.status(500).json({ error: "Server error" });
   }
 };
+
+exports.admin_dashboard_get = async (req, res) => {
+  try {
+    // جلب بيانات أساسية
+    const [totalMovies, totalUsers] = await Promise.all([
+      Movie.countDocuments(),
+      User.countDocuments()
+    ]);
+
+    // جلب عدد التعليقات اللي فيها comment سواء كانت من مستخدمين محليين أو مستوردة (في مودل Review)
+    // شرط user موجود يعني تعليق محلي، شرط user غير موجود يعني تعليق من API (مستورد)
+    const totalComments = await Review.countDocuments({ comment: { $exists: true, $ne: null, $ne: '' } });
+    const localComments = await Review.countDocuments({ comment: { $exists: true, $ne: null, $ne: '' }, user: { $ne: null } });
+
+    // جلب عدد التقييمات اللي فيها rating سواء محلية أو مستوردة (نفس الفكرة)
+    const totalReviews = await Review.countDocuments({ rating: { $ne: null } });
+    const localReviews = await Review.countDocuments({ rating: { $ne: null }, user: { $ne: null } });
+
+    res.render('pages/dashboard', {
+      title: 'Dashboard - Flixify',
+      description: 'Manage your movies and TV shows on Flixify.',
+      keywords: 'dashboard, movies, tv shows, management',
+      totalMovies,
+      totalUsers,
+      totalComments,
+      totalReviews,
+      localComments,
+      localReviews
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
+

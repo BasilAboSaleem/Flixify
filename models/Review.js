@@ -6,6 +6,7 @@ const reviewSchema = new mongoose.Schema({
   title: String,
   rating: { type: Number, min: 0, max: 10 },
   comment: String,
+  source: { type: String, default: 'local' } // 'local' or 'tmdb'api
 }, { timestamps: true });
 
 module.exports = mongoose.model('Review', reviewSchema);
