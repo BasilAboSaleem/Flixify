@@ -30,7 +30,7 @@ router.get('/anime/movies', coreController.anime_movies_get);
 router.get('/anime/top-rated', coreController.anime_top_rated_get);
 router.get('/anime/netflix', coreController.anime_netflix_get);
 
-router.get('/dashboard', authMiddlewares.requireAuth, (req, res) => {
+router.get('/admin/dashboard', authMiddlewares.requireAuth, (req, res) => {
   res.render('pages/dashboard', {
     title: 'Dashboard - Flixify',
     description: 'Manage your movies and TV shows on Flixify.',

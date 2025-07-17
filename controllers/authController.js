@@ -35,6 +35,9 @@ exports.signin_post = async (req, res) => {
       req.session.userId = user._id;
       return res.json({ success: true, redirectTo: "/verify" });
     }
+    if (user.role === 'admin') {
+      return res.json({ success: true, redirectTo: "/admin/dashboard" });
+    }
 
     return res.json({ success: true, redirectTo: "/" });
 
