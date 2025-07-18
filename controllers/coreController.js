@@ -645,7 +645,6 @@ exports.admin_dashboard_get = async (req, res) => {
     const localComments = await Review.countDocuments({ comment: { $exists: true, $ne: null, $ne: '' }, user: { $ne: null } });
 
     // جلب عدد التقييمات اللي فيها rating سواء محلية أو مستوردة (نفس الفكرة)
-    const totalReviews = await Review.countDocuments({ rating: { $ne: null } });
     const localReviews = await Review.countDocuments({ rating: { $ne: null }, user: { $ne: null } });
 
     res.render('pages/dashboard', {
@@ -655,7 +654,6 @@ exports.admin_dashboard_get = async (req, res) => {
       totalMovies,
       totalUsers,
       totalComments,
-      totalReviews,
       localComments,
       localReviews
     });
