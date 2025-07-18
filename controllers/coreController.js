@@ -3,6 +3,18 @@ const Movie = require('../models/Movie');
 const Review = require('../models/Review');
 const User = require('../models/User');
 const Settings = require('../models/Settings');
+const fs = require('fs');
+const path = require('path');
+const multer  = require('multer')
+const upload = multer({storage: multer.diskStorage({})});
+const cloudinary = require("cloudinary").v2;
+
+ // Configuration cloudinary اعدادات الكلاودنري
+ cloudinary.config({ 
+    cloud_name: process.env.CLOUD_NAME, 
+    api_key: process.env.API_KEY, 
+    api_secret: process.env.API_SECRET 
+  });
 const e = require('express');
 
 exports.index_get = async (req, res) => {
@@ -670,14 +682,6 @@ exports.admin_settings_get = async (req, res) => {
     // جلب الإعدادات من قاعدة البيانات
     const settings = await Settings.findOne();
 
-    if (!settings) {
-      return res.status(404).render('pages/dashboard/settings', {
-        title: 'Settings Not Found',
-        description: 'No settings found for the site.',
-        keywords: 'settings, not found'
-      });
-    }
-
     res.render('pages/dashboard/settings', {
       title: 'Admin Settings',
       settings,
@@ -690,3 +694,56 @@ exports.admin_settings_get = async (req, res) => {
     res.status(500).send('Server Error');
   }
 };
+
+exports.admin_settings_put = async (req, res) => {
+  try {
+    const { siteName, contact = {}, social = {}, copyrightText } = req.body;
+
+    let settings = await Settings.findOne();
+    if (!settings) settings = new Settings();
+
+    let logoUrl = req.body.logoUrl || settings.logoUrl || '';
+
+    if (req.file) {
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'flixify/logo',
+        use_filename: true,
+        unique_filename: false,
+        overwrite: true,
+      });
+
+      logoUrl = result.secure_url;
+
+      fs.unlinkSync(req.file.path);
+    }
+
+    settings.siteName = siteName || settings.siteName;
+    settings.logoUrl = logoUrl;
+
+    settings.contact = {
+      phone: contact.phone || settings.contact?.phone || '',
+      email: contact.email || settings.contact?.email || '',
+    };
+
+    settings.social = {
+      facebook: social.facebook || settings.social?.facebook || '',
+      instagram: social.instagram || settings.social?.instagram || '',
+      twitter: social.twitter || settings.social?.twitter || '',
+      vk: social.vk || settings.social?.vk || '',
+    };
+
+    settings.copyrightText = copyrightText || settings.copyrightText || '';
+
+    await settings.save();
+
+    req.flash('success', 'Settings updated successfully');
+    res.redirect('/admin/settings');
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    req.flash('error', 'Failed to update settings');
+    res.redirect('/admin/settings');
+  }
+};
+
+
+

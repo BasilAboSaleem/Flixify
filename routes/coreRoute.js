@@ -3,6 +3,8 @@ const router = express.Router();
 const coreController = require('../controllers/coreController');
 const { check, validationResult } = require("express-validator");
 const authMiddlewares = require('../middlewares/authMiddlewares');
+const multer  = require('multer')
+const upload = multer({storage: multer.diskStorage({})});
 
 router.get('/', coreController.index_get);
 router.get('/movies/:id', coreController.movie_details_get);
@@ -32,5 +34,6 @@ router.get('/anime/netflix', coreController.anime_netflix_get);
 
 router.get('/admin/dashboard', authMiddlewares.requireAuth, coreController.admin_dashboard_get);
 router.get('/admin/settings', authMiddlewares.requireAuth, coreController.admin_settings_get);
+router.put('/admin/settings', authMiddlewares.requireAuth,  upload.single('logoImage'), coreController.admin_settings_put);
 
 module.exports = router;
