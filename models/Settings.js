@@ -4,12 +4,6 @@ const settingSchema = new mongoose.Schema({
   siteName: { type: String, required: true },
   logoUrl: { type: String, required: true },
 
-  resourcesLinks: [{
-    label: String,
-    url: String,
-  }],
-
-
 
   contact: {
     phone: String,

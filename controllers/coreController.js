@@ -43,6 +43,9 @@ exports.index_get = async (req, res) => {
     // أفلام أو مسلسلات قادمة (coming_soon)
     const expectedPremiere = await Movie.find({ category: 'coming_soon' }).limit(6).exec();
 
+    //جلب الستنجز
+    const settings = await Settings.findOne().exec();
+
     res.render('pages/index', {
       title: 'Flixify',
       description: 'Discover and manage your favorite movies and TV shows.',
@@ -54,6 +57,7 @@ exports.index_get = async (req, res) => {
       animatedMovies,
       animeMovies,
       expectedPremiere,
+      settings
     });
 
   } catch (err) {
