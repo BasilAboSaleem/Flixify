@@ -1,8 +1,8 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const axios = require('axios');
-const Movie = require('./models/Movie');
-const Review = require('./models/Review'); 
+const Movie = require('../models/Movie');
+const Review = require('../models/Review'); 
 
 const TMDB_API_KEY = process.env.TMDB_API_KEY;
 const TMDB_API_URL = 'https://api.themoviedb.org/3';
