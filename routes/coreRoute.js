@@ -31,5 +31,6 @@ router.get('/anime/top-rated', coreController.anime_top_rated_get);
 router.get('/anime/netflix', coreController.anime_netflix_get);
 
 router.get('/admin/dashboard', authMiddlewares.requireAuth, coreController.admin_dashboard_get);
+router.get('/admin/settings', authMiddlewares.requireAuth, coreController.admin_settings_get);
 
 module.exports = router;

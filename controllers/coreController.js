@@ -2,6 +2,7 @@ const axios = require('axios');
 const Movie = require('../models/Movie');
 const Review = require('../models/Review');
 const User = require('../models/User');
+const Settings = require('../models/Settings');
 const e = require('express');
 
 exports.index_get = async (req, res) => {
@@ -664,3 +665,28 @@ exports.admin_dashboard_get = async (req, res) => {
   }
 };
 
+exports.admin_settings_get = async (req, res) => {
+  try {
+    // جلب الإعدادات من قاعدة البيانات
+    const settings = await Settings.findOne();
+
+    if (!settings) {
+      return res.status(404).render('pages/dashboard/settings', {
+        title: 'Settings Not Found',
+        description: 'No settings found for the site.',
+        keywords: 'settings, not found'
+      });
+    }
+
+    res.render('pages/dashboard/settings', {
+      title: 'Admin Settings',
+      settings,
+      success: req.flash('success'),
+      error: req.flash('error')
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server Error');
+  }
+};
