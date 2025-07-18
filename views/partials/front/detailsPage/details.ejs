@@ -1,3 +1,29 @@
+<style>
+  .watchlist-btn {
+    background-color: #ff55a5;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    cursor: pointer;
+  }
+
+  .watchlist-btn i {
+    font-size: 20px;
+  }
+
+  .watchlist-btn:hover {
+    background-color: #ff3377;
+    transform: scale(1.05);
+  }
+</style>
+
 <section class="section details">
 		<!-- details background -->
 		<div class="details__bg" data-bg="<%= backdropUrl %>"></div>
@@ -7,9 +33,13 @@
 		<div class="container">
 			<div class="row">
 				<!-- title -->
-				<div class="col-12">
-					<h1 class="details__title"><%= title %></h1>
-				</div>
+	<div class="col-12 d-flex align-items-center justify-content-between">
+  <h1 class="details__title mb-0"><%= title %></h1>
+  <button class="watchlist-btn" onclick="event.preventDefault(); addToWatchlist('<%= movieId %>');" title="Add to Watchlist">
+    <i class="icon ion-ios-heart"></i> Add to Watchlist
+  </button>
+</div>
+
 				<!-- end title -->
 
 				<!-- content -->
@@ -21,6 +51,7 @@
 								<div class="card__cover">
 									<img src="<%= posterUrl %>" alt="">
 								</div>
+								
 							</div>
 							<!-- end card cover -->
 
@@ -153,4 +184,22 @@
 			</div>
 		</div>
 		<!-- end details content -->
+		<script>
+  function addToWatchlist(movieId) {
+    fetch(`/watchlist/add/${movieId}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+    .then(res => res.json())
+    .then(data => {
+      alert(data.message || 'Added to watchlist!');
+    })
+    .catch(err => {
+      alert('Error adding to watchlist');
+    });
+  }
+</script>
+
 	</section>

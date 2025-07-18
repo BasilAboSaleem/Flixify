@@ -3,6 +3,7 @@ const Movie = require('../models/Movie');
 const Review = require('../models/Review');
 const User = require('../models/User');
 const Settings = require('../models/Settings');
+const Watchlist = require('../models/Watchlist');
 const fs = require('fs');
 const path = require('path');
 const multer  = require('multer')
@@ -115,6 +116,72 @@ exports.search_get = async (req, res) => {
     res.status(500).render('pages/dashboard/errors/500', {
       error: 'An error occurred while searching.'
     });
+  }
+};
+
+exports.watchlist_get = async (req, res) => {
+  try {
+    const userId = req.user._id; // لازم يكون المستخدم مسجل دخول
+
+    // صفحة الباجينشن الحالية وعدد العناصر لكل صفحة
+    const currentPage = parseInt(req.query.page) || 1;
+    const perPage = 30;
+
+    // نعد كم عنصر موجود للمستخدم
+    const totalCount = await Watchlist.countDocuments({ user: userId });
+
+    // نحسب العدد الكلي للصفحات
+    const totalPages = Math.ceil(totalCount / perPage);
+
+    // نجيب الـ Watchlist مع ربط بيانات الأفلام، ونقسمها حسب الصفحة
+    const watchlistItems = await Watchlist.find({ user: userId })
+      .populate('movie')
+      .skip((currentPage - 1) * perPage)
+      .limit(perPage);
+
+    // نصنع مصفوفة أفلام فقط لتمريرها للـ EJS
+    const items = watchlistItems.map(item => item.movie);
+
+    res.render('pages/front/watchlist ', {
+      title: 'My Watchlist',
+      items,
+      currentPage,
+      totalPages,
+    });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).send('Server error');
+  }
+};
+
+exports.watchlist_add_post = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const movieId = req.params.movieId;
+
+    const movie = await Movie.findOne({ tmdbId: movieId });
+    if (!movie) {
+      return res.status(404).json({ message: 'Movie not found' });
+    }
+
+    const existingWatchlistItem = await Watchlist.findOne({ user: userId, movie: movie._id });
+    if (existingWatchlistItem) {
+      return res.status(400).json({ message: 'Movie already in watchlist' });
+    }
+
+    const newWatchlistItem = new Watchlist({
+      user: userId,
+      movie: movie._id
+    });
+
+    await newWatchlistItem.save();
+
+    res.status(200).json({ message: 'Movie added to watchlist successfully' });
+
+  } catch (error) {
+    console.error('Error adding to watchlist:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
@@ -692,7 +759,8 @@ exports.movie_details_get = async (req, res) => {
       trailerUrl: trailerUrl,
       tvSeasons,
       relatedMovies,
-      requestUrl
+      requestUrl,
+      movieId
     });
 
   } catch (err) {
