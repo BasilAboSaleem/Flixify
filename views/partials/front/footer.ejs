@@ -1,4 +1,33 @@
+<style>
+  .floating-watchlist-btn {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  background-color: #ff55a5;
+  color: white;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 24px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  cursor: pointer;
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.floating-watchlist-btn:hover {
+  background-color: #e0488f;
+}
+
+</style>
 <footer class="footer py-3">
+    <!-- زر Watchlist العائم -->
+  <a href="/watchlist" class="floating-watchlist-btn" title="Watchlist">
+    <i class="icon ion-ios-bookmark"></i>
+  </a>
   <div class="container">
     <div class="row align-items-center justify-content-between">
 
