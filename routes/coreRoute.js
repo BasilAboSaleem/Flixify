@@ -10,6 +10,7 @@ router.get('/', coreController.index_get);
 router.get('/search', coreController.search_get);
 router.get('/watchlist', authMiddlewares.requireAuth, coreController.watchlist_get);
 router.post('/watchlist/add/:movieId', authMiddlewares.requireAuth, coreController.watchlist_add_post);
+router.delete('/watchlist/remove/:movieId', authMiddlewares.requireAuth, coreController.watchlist_remove_delete);
 router.get('/movies/:id', coreController.movie_details_get);
 router.get("/recently-added", coreController.recently_added_get);
 router.get('/all-movies', coreController.all_movies_get);

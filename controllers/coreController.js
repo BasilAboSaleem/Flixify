@@ -142,13 +142,12 @@ exports.watchlist_get = async (req, res) => {
     // نصنع مصفوفة أفلام فقط لتمريرها للـ EJS
     const items = watchlistItems.map(item => item.movie);
 
-    res.render('pages/front/watchlist ', {
-      title: 'My Watchlist',
-      items,
-      currentPage,
-      totalPages,
-    });
-
+  res.render('pages/front/watchlist', {
+  title: 'My Watchlist',
+  items,
+  currentPage,
+  totalPages,
+});
   } catch (error) {
     console.error(error);
     res.status(500).send('Server error');
@@ -184,7 +183,30 @@ exports.watchlist_add_post = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+exports.watchlist_remove_delete = async (req, res) => {
+  try {
+   const userId = req.user._id;
+    const movieId = req.params.movieId;
 
+    const movie = await Movie.findOne({ tmdbId: movieId });
+    if (!movie) {
+      req.flash('error', 'Movie not found');
+  return res.redirect('/watchlist');
+}
+
+    const watchlistItem = await Watchlist.findOneAndDelete({ movie: movie._id, user: userId });
+    if (!watchlistItem) {
+      req.flash('error', 'Watchlist item not found');
+      return res.redirect('/watchlist');
+    }
+
+    req.flash('success', 'Watchlist item removed successfully');
+    res.redirect('/watchlist');
+  } catch (error) {
+    console.error('Error removing from watchlist:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 exports.recently_added_get = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
