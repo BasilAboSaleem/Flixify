@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('../../partials/dashboard/head.ejs') %>
+
+<body id="page-top">
+  <div id="wrapper">
+    <!-- Sidebar -->
+    <%- include('../../partials/dashboard/sidebar.ejs') %>
+
+    <div id="content-wrapper" class="d-flex flex-column">
+      <div id="content">
+        <!-- Topbar -->
+        <%- include('../../partials/dashboard/topbar.ejs') %>
+
+        <!-- Flash messages -->
+        <% if (success && success.length > 0) { %>
+          <div class="alert alert-success" id="flash-success">
+            <%= success[0] %>
+          </div>
+        <% } %>
+
+        <% if (error && error.length > 0) { %>
+          <div class="alert alert-danger" id="flash-error">
+            <%= error[0] %>
+          </div>
+        <% } %>
+
+        <!-- Page Heading -->
+        <h1 class="h3 mb-4 text-gray-800">Add Movies and Series</h1>
+
+        <div class="row">
+          <div class="col-lg-12" style="margin-left: 20px;">
+            <p class="mb-4">
+              To add new movies and series to the database, please click the button below.
+            </p>
+
+            <!-- AJAX Button -->
+            <button id="addMoviesBtn" class="btn btn-primary mb-4" style="margin-left: 40px;">
+              <i class="fas fa-film"></i> Add Movies and Series
+            </button>
+
+            <!-- Loading indicator -->
+            <span id="loadingIndicator" style="display:none; margin-left: 15px; font-size: 1.2rem; color: #555;">
+              <i class="fas fa-spinner fa-spin"></i> Loading...
+            </span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <a class="scroll-to-top rounded" href="#page-top"><i class="fas fa-angle-up"></i></a>
+  <%- include('../../partials/dashboard/logout.ejs') %>
+
+  <!-- Scripts -->
+  <script src="/vendor/jquery/jquery.min.js"></script>
+  <script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <script>
+    document.getElementById('addMoviesBtn').addEventListener('click', async function () {
+      const btn = document.getElementById('addMoviesBtn');
+      const loader = document.getElementById('loadingIndicator');
+
+      btn.disabled = true;
+      loader.style.display = 'inline-block';
+
+      try {
+        const res = await fetch('/admin/add-movies-series', {
+          method: 'POST',
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        });
+
+        const html = await res.text();
+        document.open();
+        document.write(html);
+        document.close();
+      } catch (err) {
+        alert('Something went wrong. Please try again.');
+        console.error(err);
+      } finally {
+        btn.disabled = false;
+        loader.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -39,5 +39,8 @@ router.get('/anime/netflix', coreController.anime_netflix_get);
 router.get('/admin/dashboard', authMiddlewares.requireAuth, coreController.admin_dashboard_get);
 router.get('/admin/settings', authMiddlewares.requireAuth, coreController.admin_settings_get);
 router.put('/admin/settings', authMiddlewares.requireAuth,  upload.single('logoImage'), coreController.admin_settings_put);
+router.get('/admin/add-movies-series', authMiddlewares.requireAuth, coreController.admin_add_movies_series_get);
+router.post('/admin/add-movies-series', authMiddlewares.requireAuth, coreController.admin_add_movies_series_post);
+
 
 module.exports = router;

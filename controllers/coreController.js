@@ -4,6 +4,7 @@ const Review = require('../models/Review');
 const User = require('../models/User');
 const Settings = require('../models/Settings');
 const Watchlist = require('../models/Watchlist');
+const seedMovies = require('../utils/seedMovies'); 
 const fs = require('fs');
 const path = require('path');
 const multer  = require('multer')
@@ -892,5 +893,22 @@ exports.admin_settings_put = async (req, res) => {
   }
 };
 
+exports.admin_add_movies_series_get = (req, res) => {
+  res.render('pages/dashboard/addItems', {
+    title: 'Add Movie/Series',
+  });
+}
 
+exports.admin_add_movies_series_post = async (req, res) => {
+  try {
+    await seedMovies();  // تشغيل الدالة التي تجلب وتضيف الأفلام والمسلسلات
 
+    req.flash('success', 'Movies and series added successfully!');
+    res.redirect('/admin/add-movies-series');
+  } catch (error) {
+    console.error('Error seeding movies and series:', error);
+    req.flash('error', 'Failed to add movies and series. Please try again later.');
+
+    res.redirect('/admin/add-movies-series');
+  }
+};

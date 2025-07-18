@@ -49,7 +49,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 })
 .then(() => {
   console.log('Connected to MongoDB');
-  seedMovies();
+  
 })
 .catch(err => console.error('MongoDB connection error:', err));
 
@@ -189,7 +189,7 @@ async function seedMoviesByCategory(category, endpoint, type, extraParams = {}, 
 }
 
 // دالة خاصة لعمل نتفليكس في نفس القسم مع فلترة خاصة
-async function seedNetflixSubcategory(baseCategory, endpoint, type, extraParams = {}, maxPages = 5) {
+async function seedNetflixSubcategory(baseCategory, endpoint, type, extraParams = {}, maxPages = 2) {
   await seedMoviesByCategory(baseCategory, endpoint, type, extraParams, maxPages);
 
   const netflixCategory = `${baseCategory}_netflix`;
@@ -204,49 +204,51 @@ async function seedNetflixSubcategory(baseCategory, endpoint, type, extraParams 
 async function seedMovies() {
 
   // أفلام ومسلسلات شعبية
-  await seedNetflixSubcategory('popular', '/movie/popular', 'movie', {}, 10);
-  await seedNetflixSubcategory('tv_series', '/tv/popular', 'tv', {}, 10);
+  await seedNetflixSubcategory('popular', '/movie/popular', 'movie', {}, 2);
+  await seedNetflixSubcategory('tv_series', '/tv/popular', 'tv', {}, 2);
 
   // أفلام ومسلسلات قادمة
-  await seedNetflixSubcategory('coming_soon', '/movie/upcoming', 'movie', {}, 5);
-  await seedNetflixSubcategory('coming_soon_tv', '/tv/on_the_air', 'tv', {}, 5);
+  await seedNetflixSubcategory('coming_soon', '/movie/upcoming', 'movie', {}, 1);
+  await seedNetflixSubcategory('coming_soon_tv', '/tv/on_the_air', 'tv', {}, 1);
 
   // أفلام ومسلسلات الأعلى تقييماً
-  await seedNetflixSubcategory('top_rated', '/movie/top_rated', 'movie', {}, 10);
-  await seedNetflixSubcategory('top_rated_tv', '/tv/top_rated', 'tv', {}, 10);
+  await seedNetflixSubcategory('top_rated', '/movie/top_rated', 'movie', {}, 2);
+  await seedNetflixSubcategory('top_rated_tv', '/tv/top_rated', 'tv', {}, 2);
 
   // أنمي وكارتون
-  await seedMoviesByCategory('animated', '/discover/movie', 'movie', { with_genres: 16 }, 5);
-  await seedMoviesByCategory('anime', '/discover/movie', 'movie', { with_genres: 16, with_original_language: 'ja' }, 5);
-  await seedMoviesByCategory('anime_tv', '/discover/tv', 'tv', { with_genres: 16, with_original_language: 'ja' }, 5);
+  await seedMoviesByCategory('animated', '/discover/movie', 'movie', { with_genres: 16 }, 2);
+  await seedMoviesByCategory('anime', '/discover/movie', 'movie', { with_genres: 16, with_original_language: 'ja' }, 2);
+  await seedMoviesByCategory('anime_tv', '/discover/tv', 'tv', { with_genres: 16, with_original_language: 'ja' }, 2);
 
   // أفلام آسيوية
   const asianLanguages = ['ja', 'ko', 'zh', 'hi'];
   for (const lang of asianLanguages) {
-    await seedMoviesByCategory('asian', '/discover/movie', 'movie', { with_original_language: lang }, 3);
+    await seedMoviesByCategory('asian', '/discover/movie', 'movie', { with_original_language: lang }, 1);
   }
 
   // مسلسلات آسيوية
   for (const lang of asianLanguages) {
-    await seedMoviesByCategory('asian_tv', '/discover/tv', 'tv', { with_original_language: lang }, 3);
+    await seedMoviesByCategory('asian_tv', '/discover/tv', 'tv', { with_original_language: lang }, 1);
   }
 
   // نتفليكس آسيوية (أفلام ومسلسلات آسيوية على نتفليكس)
   for (const lang of asianLanguages) {
-    await seedMoviesByCategory('asian_netflix', '/discover/movie', 'movie', { with_original_language: lang, with_watch_providers: 8, watch_region: 'US' }, 3);
-    await seedMoviesByCategory('asian_tv_netflix', '/discover/tv', 'tv', { with_original_language: lang, with_watch_providers: 8, watch_region: 'US' }, 3);
+    await seedMoviesByCategory('asian_netflix', '/discover/movie', 'movie', { with_original_language: lang, with_watch_providers: 8, watch_region: 'US' }, 1);
+    await seedMoviesByCategory('asian_tv_netflix', '/discover/tv', 'tv', { with_original_language: lang, with_watch_providers: 8, watch_region: 'US' }, 1);
   }
 
   // إعادة تعيين isFeatured لكل الأفلام والمسلسلات
   await Movie.updateMany({}, { isFeatured: false });
 
-  // تعيين أول 10 أفلام/مسلسلات كـ featured
-  const featured = await Movie.find().limit(10);
+  // تعيين أول 15 أفلام/مسلسلات كـ featured
+  const featured = await Movie.find().limit(15);
   for (const movie of featured) {
     movie.isFeatured = true;
     await movie.save();
   }
 
   console.log('Seeding all categories completed and featured movies set!');
-  process.exit(0);
+  
 }
+
+module.exports = seedMovies;
