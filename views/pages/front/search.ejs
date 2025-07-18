@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../../partials/front/head.ejs') %>
+<body class="body">
+  
+  <!-- header -->
+  <%- include('../../partials/front/header.ejs') %>
+  <!-- end header -->
+
+  <!-- page title -->
+  <section class="section section--first section--bg" data-bg="/front/img/section/section.jpg">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <div class="section__wrap">
+            <h2 class="section__title"><%= title %></h2>
+            <ul class="breadcrumb">
+              <li class="breadcrumb__item"><a href="/">Home</a></li>
+              <li class="breadcrumb__item breadcrumb__item--active"><%= title %></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- end page title -->
+
+  <!-- catalog / search results -->
+  <div class="catalog">
+    <div class="container">
+      <div class="row">
+        <% if (items.length > 0) { %>
+          <% items.forEach(movie => { %>
+            <div class="col-6 col-sm-4 col-lg-3 col-xl-2">
+              <div class="card">
+                <div class="card__cover">
+                  <img src="<%= movie.posterUrl %>" alt="<%= movie.title %>">
+                  <a href="/movies/<%= movie.tmdbId %>" class="card__play">
+                    <i class="icon ion-ios-play"></i>
+                  </a>
+                </div>
+                <div class="card__content">
+                  <h3 class="card__title">
+                    <a href="/movies/<%= movie.tmdbId %>"><%= movie.title %></a>
+                  </h3>
+                  <span class="card__category">
+                    <% movie.genres.forEach(genre => { %>
+                      <a href="/catalog?genre=<%= genre %>"><%= genre %></a>
+                    <% }) %>
+                  </span>
+                  <span class="card__rate">
+                    <i class="icon ion-ios-star"></i><%= movie.rating %>
+                  </span>
+                </div>
+              </div>
+            </div>
+          <% }) %>
+        <% } else { %>
+          <div class="col-12">
+            <p>No movies found.</p>
+          </div>
+        <% } %>
+      </div>
+
+      <!-- paginator -->
+      <div class="col-12">
+        <ul class="paginator">
+
+          <% if (currentPage > 1) { %>
+            <li class="paginator__item paginator__item--prev">
+              <a href="?q=<%= encodeURIComponent(query) %>&page=<%= currentPage - 1 %>"><i class="icon ion-ios-arrow-back"></i></a>
+            </li>
+          <% } else { %>
+            <li class="paginator__item paginator__item--prev paginator__item--disabled">
+              <span><i class="icon ion-ios-arrow-back"></i></span>
+            </li>
+          <% } %>
+
+          <% 
+            const delta = 2; 
+            const range = [];
+            const rangeWithDots = [];
+            let l;
+            for (let i = 1; i <= totalPages; i++) {
+              if (i === 1 || i === totalPages || (i >= currentPage - delta && i <= currentPage + delta)) {
+                range.push(i);
+              }
+            }
+            for (let i of range) {
+              if (l) {
+                if (i - l === 2) {
+                  rangeWithDots.push(l + 1);
+                } else if (i - l !== 1) {
+                  rangeWithDots.push('...');
+                }
+              }
+              rangeWithDots.push(i);
+              l = i;
+            }
+            for (let page of rangeWithDots) {
+              if (page === '...') { %>
+                <li class="paginator__item paginator__item--dots">
+                  <span>...</span>
+                </li>
+              <% } else if (page === currentPage) { %>
+                <li class="paginator__item paginator__item--active">
+                  <a href="?q=<%= encodeURIComponent(query) %>&page=<%= page %>"><%= page %></a>
+                </li>
+              <% } else { %>
+                <li class="paginator__item">
+                  <a href="?q=<%= encodeURIComponent(query) %>&page=<%= page %>"><%= page %></a>
+                </li>
+            <% } } %>
+
+          <% if (currentPage < totalPages) { %>
+            <li class="paginator__item paginator__item--next">
+              <a href="?q=<%= encodeURIComponent(query) %>&page=<%= currentPage + 1 %>"><i class="icon ion-ios-arrow-forward"></i></a>
+            </li>
+          <% } else { %>
+            <li class="paginator__item paginator__item--next paginator__item--disabled">
+              <span><i class="icon ion-ios-arrow-forward"></i></span>
+            </li>
+          <% } %>
+
+        </ul>
+      </div>
+      <!-- end paginator -->
+
+    </div>
+  </div>
+  <!-- end catalog -->
+
+  <!-- footer -->
+  <%- include('../../partials/front/footer.ejs') %>
+  <!-- end footer -->
+
+  <!-- JS -->
+  <%- include('../../partials/front/script.ejs') %>
+</body>
+</html>

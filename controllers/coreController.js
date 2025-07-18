@@ -66,6 +66,59 @@ exports.index_get = async (req, res) => {
   }
 };
 
+exports.search_get = async (req, res) => {
+  const ITEMS_PER_PAGE = 30;
+  const query = req.query.q?.trim() || '';
+  const page = parseInt(req.query.page) || 1;
+
+  if (!query) {
+    return res.render('pages/search', {
+      title: 'Search',
+      items: [],
+      currentPage: 1,
+      totalPages: 1,
+      query,
+    });
+  }
+
+  const regex = new RegExp(query, 'i');
+
+  try {
+    const filter = {
+      $or: [
+        { title: regex },
+        { overview: regex },
+        { category: regex },
+        { genres: regex },
+        { type: regex },
+        { country: regex },
+      ],
+    };
+
+    const totalItems = await Movie.countDocuments(filter);
+    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE);
+
+    const items = await Movie.find(filter)
+      .skip((page - 1) * ITEMS_PER_PAGE)
+      .limit(ITEMS_PER_PAGE);
+
+    res.render('pages/front/search', {
+      title: `Search results for "${query}"`,
+      items,
+      currentPage: page,
+      totalPages,
+      query,
+    });
+
+  } catch (err) {
+    console.error('Search error:', err);
+    res.status(500).render('pages/dashboard/errors/500', {
+      error: 'An error occurred while searching.'
+    });
+  }
+};
+
+
 exports.recently_added_get = async (req, res) => {
   const page = parseInt(req.query.page) || 1; // الصفحة الحالية، الافتراضي 1
   const limit = 30;
